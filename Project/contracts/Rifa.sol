@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.0;
 
 contract Rifa {
     address public manager;
@@ -8,13 +8,13 @@ contract Rifa {
     bool public sorteado;
     address public vencedor;
     uint256 public len;
-    uint256 _maxEntradas = 100;
+
     uint256 public maxEntradas;
 
-    constructor() {
+    constructor(uint256 _maxEntradas) {
         manager = msg.sender;
         sorteado = false;
-        maxEntradas = maxEntradas;
+        maxEntradas = _maxEntradas;
     }
 
     // Permite que usuários entrem na rifa com uma ou mais entradas
@@ -34,6 +34,7 @@ contract Rifa {
             escolherVencedor();
         }
     }
+
 
     // Função para gerar um número aleatório usando o hash do bloco
     function random() private view returns (uint256) {
@@ -61,4 +62,12 @@ contract Rifa {
     function getEntradas() public view returns (address[] memory) {
         return entradas;
     }
+
+    function getSorteado() public view returns (bool) {
+        return sorteado;
+    }
+
+
 }
+
+
