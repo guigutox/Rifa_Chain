@@ -20,9 +20,6 @@ router.get("/", (req, res) => {
 });
 
 router.get("/status", async (req, res) => {
-  
-  
-
   try {
     const sorteado = await contract.getSorteado();
     res.json({ sorteado });
@@ -54,7 +51,7 @@ router.post("/entrar", async (req, res) => {
   }
 
   let newWallet = new ethers.Wallet(key, provider);
-  const newContract = new ethers.Contract(contractAddress, contractABI, newWallet);
+  let newContract = new ethers.Contract(contractAddress, contractABI, newWallet);
 
     try {
         const tx = await newContract.entrar({ value: ethers.parseEther(value) });
