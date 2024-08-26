@@ -13,12 +13,12 @@ contract Rifa {
     uint256 public restEntradas; // Entradas restantes
     uint256 public valorEntrada; // Preço de cada entrada
     uint256 public numEntradas;
-    uint256 constant DEFAULT_MAX_ENTRADAS = 100;
+
 
     constructor(uint256 _maxEntradas) {
         manager = msg.sender;
         sorteado = false;
-        maxEntradas = _maxEntradas > 0 ? _maxEntradas : DEFAULT_MAX_ENTRADAS;
+        maxEntradas = _maxEntradas;
         restEntradas = maxEntradas;
         valorEntrada = .01 ether;
     }
