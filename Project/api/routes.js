@@ -20,6 +20,9 @@ router.get("/", (req, res) => {
 });
 
 router.get("/status", async (req, res) => {
+  
+  
+
   try {
     const sorteado = await contract.getSorteado();
     res.json({ sorteado });
@@ -38,8 +41,23 @@ router.get("/entradas", async (req, res) => {
 });
 
 router.post("/entrar", async (req, res) => {
+
+  const key = req.body.key;
+  const value = req.body.value;
+
+  if (!key) {
+    return res.status(400).json({ error: "Necessário informar uma chave para transação" });
+  }
+
+  if (!value) {
+    return res.status(400).json({ error: "Necessário informar um valor para transação" });
+  }
+
+  let newWallet = new ethers.Wallet(key, provider);
+  const newContract = new ethers.Contract(contractAddress, contractABI, newWallet);
+
     try {
-        const tx = await contract.entrar({ value: ethers.parseEther("0.1") });
+        const tx = await newContract.entrar({ value: ethers.parseEther(value) });
         await tx.wait();
         res.json({ message: "Entrada realizada com sucesso!" });
     } catch (error) {
