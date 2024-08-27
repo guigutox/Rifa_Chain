@@ -1,0 +1,4 @@
+npx hardhat node // faz com que o hardhat inicie uma rede blockchain local para testes. Deixe esse terminal aberto
+
+
+npx hardhat run --network localhost scripts/deploy.js // para compilar os contratos, do jeito que o script esta, ele vai subir um Realdigital e uma Rifa de uma vez
