@@ -10,7 +10,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.0",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/ignition-core": "^0.15.0",
     "hardhat": "^2.22.9"
   },
   "dependencies": {
