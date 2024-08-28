@@ -46,6 +46,7 @@ router.post("/entrar", async (req, res) => {
 
   const newWallet = new ethers.Wallet(key, provider);
   const newContract = new ethers.Contract(contractAddress, contractABI, newWallet);
+  await newContract.connect(newWallet);
 
   try {
     // Aprova a transferência dos tokens para o contrato
@@ -57,7 +58,8 @@ router.post("/entrar", async (req, res) => {
     // await approvalTx.wait();
 
     // Entra na rifa
-    const tx = await newContract.entrar(quantidadeTokens);
+    console.log(newContract);
+    const tx = await newContract.entrar(ethers.parseUnits(quantidadeTokens.toString(), 18));
     await tx.wait();
 
     res.json({ message: "Entrada realizada com sucesso!" });

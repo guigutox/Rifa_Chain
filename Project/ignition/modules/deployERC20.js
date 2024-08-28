@@ -14,6 +14,7 @@ async function main() {
     // Deploy Rifa
     const maxEntradas = 100;
     const valorEntrada = ethers.parseUnits("10", 18); // 10 DREX por entrada
+    console.log({realDigitalAddress, maxEntradas, valorEntrada});
     const Rifa = await ethers.getContractFactory("Rifa");
     const rifa = await Rifa.deploy(realDigitalAddress, maxEntradas, valorEntrada);
     await rifa.waitForDeployment();  // mesma coisa de ali em cima
