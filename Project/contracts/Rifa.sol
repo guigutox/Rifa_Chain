@@ -26,6 +26,12 @@ contract Rifa {
         valorEntrada = _valorEntrada;
     }
 
+     // Modificador para permitir apenas o gerente executar certas funções
+    modifier onlyManager() {
+        require(msg.sender == manager, "Apenas o gerente pode chamar esta funcao");
+        _;
+    }
+
     // Permite que usuários entrem na rifa com uma ou mais entradas
     function entrar(uint256 quantidadeTokens) public {
         require(!sorteado, "O sorteio ja foi realizado");
@@ -62,10 +68,6 @@ contract Rifa {
         // Passar as variaveis para ingles
 
         restEntradas -= numEntradas;
-
-        if (len >= maxEntradas) {
-            escolherVencedor();
-        }
     }
 
     // Função para gerar um número aleatório usando o hash do bloco
@@ -73,8 +75,7 @@ contract Rifa {
         return uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, entradas)));
     }
 
-    // Função para escolher o vencedor da rifa
-    function escolherVencedor() private {
+    function escolherVencedor() public onlyManager {
         require(entradas.length > 0, "Nenhuma entrada na rifa");
         require(!sorteado, "Sorteio ja realizado");
 
@@ -82,8 +83,7 @@ contract Rifa {
         vencedor = entradas[index];
 
         // Transfere os tokens acumulados como prêmio para o vencedor
-        uint premio = token.balanceOf(address(this)); // NOVA FEAT
-
+        uint256 premio = token.balanceOf(address(this));
         require(token.transfer(vencedor, premio), "Transferencia do premio falhou");
 
         sorteado = true;
