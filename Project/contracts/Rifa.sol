@@ -32,8 +32,20 @@ contract Rifa {
         _;
     }
 
+    // Modificador para garantir que o sorteio ainda não foi realizado
+    modifier notSorteado() {
+        require(!sorteado, "O sorteio ja foi realizado");
+        _;
+    }
+
+    // Modificador para garantir que ainda há entradas disponíveis
+    modifier entradasDisponiveis() {
+        require(restEntradas > 0, "Nao ha entradas disponiveis");
+        _;
+    }
+
     // Permite que usuários entrem na rifa com uma ou mais entradas
-    function entrar(uint256 quantidadeTokens) public {
+    function entrar(uint256 quantidadeTokens) public notSorteado entradasDisponiveis{
         require(!sorteado, "O sorteio ja foi realizado");
         require(quantidadeTokens >= valorEntrada, "Quantidade minima de tokens nao atingida");
 
@@ -50,23 +62,6 @@ contract Rifa {
         for (uint256 i = 0; i < numEntradas; i++) {
             entradas.push(msg.sender);
         }
-
-        // utilizar mapping ao inves de length
-        // Fazer a funcao gerar vencedor pelo dono da rifa
-        // Multiplo do valor do contrato. Ex se a rifa o cara so pode comprar 7, 14, 21 ...
-        // Passa a quantidade de fichas que voce quer comprar e o contrato verifica se voce tem a quantidade de tokens para comprar 
-        // Duas funcoes, para verificar se o sortei ja foi sorteado ou nao, logo apos a linha 31. Modifier. Pro cara nao ficar spamando o request
-        // Usar o balnceOF do proprio contrato ao inves da varial premio para saber quem foi o ganhador 
-        // Passar a quantidade de rifas ao inves de valor DREX
-        ///////////////////////////// FLUXOGRAMA /////////////////////////////
-        // Primeiro o cliente entra e verifica se a refia ja foi sorteada ou nao --> Requires
-        // Validacao para nao deixar ele comprar valores negativos --> Requires
-        // Validacao para mandar mensagem --> require
-        // Calcular o custo da rifa --> numEntradas * valorEntrada
-        // Adcionar o endereco do cliente no array de entradas --> entradas.push(msg.sender)
-        // Diminuir a quantidade de tickets disponiveis, baseado na quantidade que o cliente comprou
-        // Passar as variaveis para ingles
-
         restEntradas -= numEntradas;
     }
 
