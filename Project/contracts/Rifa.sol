@@ -44,10 +44,17 @@ contract Rifa {
         _;
     }
 
+
     // Permite que usuários entrem na rifa com uma ou mais entradas
     function entrar(uint256 quantidadeTokens) public notSorteado entradasDisponiveis{
         require(!sorteado, "O sorteio ja foi realizado");
-        require(quantidadeTokens >= valorEntrada, "Quantidade minima de tokens nao atingida");
+        require(quantidadeTokens >= valorEntrada, "Quantidade minima de tokens nao atingida");  
+
+        
+
+        // Verifica se o usuário tem saldo suficiente para a transferência
+        uint256 saldoUsuario = token.balanceOf(msg.sender);
+        require(saldoUsuario >= quantidadeTokens, "Saldo insuficiente para entrar na rifa");
 
         numEntradas = quantidadeTokens / valorEntrada;
 
