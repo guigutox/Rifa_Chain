@@ -60,6 +60,19 @@ contract Rifa {
             entradasCount++;
         }
         restEntradas -= quantidadeRifas;
+        
+
+        // nao da pra criar uma funcao separada para sortear automaticamente, para fazer isso teriamos que adicionar o modifier onlyManager, o que impediria que algum endereço que nao seja o owner compre a ultima ficha dessa rifa
+        if(restEntradas == 0){
+        uint256 index = random() % entradasCount;
+        vencedor = entradas[index];
+
+
+        require(token.transfer(vencedor, (token.balanceOf(address(this)))), "Transferencia do premio falhou");
+
+        sorteado = true;
+
+        }
 
     }
 
