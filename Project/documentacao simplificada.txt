@@ -7,29 +7,25 @@ node server.js
 
 FLUXOGRAMA
 Crie uma rifa
-POST:http://localhost:3000/create-rifa
+http://localhost:3000/create-rifa
 {
   "maxEntradas": 100,
   "valorEntrada": "10"
 }
-POST:http://localhost:3000/approve
+http://localhost:3000/approve
 aprove essa rifa criada a gastar seus tokens
 {
   "rifaAddress": "ENDERECO DA RIFA",
   "amount": "20"
 }
-POST:entre na rifa
+entre na rifa
 http://localhost:3000/enter-rifa
 {
   "rifaAddress": "ENDERECO DA RIFA",
   "quantidadeRifas": 2
 }
-balance off da rifa
-GET:http://localhost:3000/rifa/ENDERECO DA RIFA/tokens-acumulados
-corpo vazio
 
-entradas da rifa
-GET:http://localhost:3000/rifa/ENDERECO DA RIFA/entradas
-corpo vazio
-
-
+ARQUIVO .ENV
+PRIVATE_KEY= private key da primeira conta que aparece no npx hardhat node
+HARDHAT_RPC_URL=http://localhost:8545
+CONTRACT_ADDRESS_REALDIGITAL=use o endereco ao dar deploy no contrato RealDigital.sol(npx hardhat run --network localhost ignition/modules/deployERC20.js)
