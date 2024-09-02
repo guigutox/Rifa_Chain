@@ -1,0 +1,38 @@
+Blockchain:
+npx hardhat node
+Em outro terminal: npx hardhat run --network localhost ignition/modules/deployERC20.js
+
+API:
+node api/server.js
+
+FLUXOGRAMA
+Crie uma rifa
+http://localhost:3000/criar-rifa
+{
+  "maxEntradas": 100,
+  "valorEntrada": "10"
+}
+http://localhost:3000/approve
+aprove essa rifa criada a gastar seus tokens
+{
+  "rifaAddress": "ENDERECO DA RIFA",
+  "amount": "20"
+}
+entre na rifa
+http://localhost:3000/entrar
+{
+  "rifaAddress": "ENDERECO DA RIFA",
+  "quantidadeRifas": 2
+}
+balance off da rifa
+GET:http://localhost:3000/rifa/ENDERECO DA RIFA/tokens-acumulados
+corpo vazio
+
+entradas da rifa
+GET:http://localhost:3000/rifa/ENDERECO DA RIFA/entradas
+corpo vazio
+
+ARQUIVO .ENV
+PRIVATE_KEY= private key da primeira conta que aparece no npx hardhat node
+HARDHAT_RPC_URL=http://localhost:8545
+CONTRACT_ADDRESS_REALDIGITAL=use o endereco ao dar deploy no contrato RealDigital.sol(npx hardhat run --network localhost ignition/modules/deployERC20.js)
