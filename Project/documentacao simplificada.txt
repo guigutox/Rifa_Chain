@@ -24,6 +24,13 @@ http://localhost:3000/enter-rifa
   "rifaAddress": "ENDERECO DA RIFA",
   "quantidadeRifas": 2
 }
+balance off da rifa
+GET:http://localhost:3000/rifa/ENDERECO DA RIFA/tokens-acumulados
+corpo vazio
+
+entradas da rifa
+GET:http://localhost:3000/rifa/ENDERECO DA RIFA/entradas
+corpo vazio
 
 ARQUIVO .ENV
 PRIVATE_KEY= private key da primeira conta que aparece no npx hardhat node
