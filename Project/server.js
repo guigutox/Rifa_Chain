@@ -26,7 +26,7 @@ const rifaAbi = rifaJson.abi;
 const realDigitalAddress = process.env.CONTRACT_ADDRESS_REALDIGITAL;
 const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, wallet);
 
-app.post('/create-rifa', async (req, res) => {
+app.post('/criar-rifa', async (req, res) => {
     try {
         const { maxEntradas, valorEntrada } = req.body;
         
@@ -41,21 +41,31 @@ app.post('/create-rifa', async (req, res) => {
     }
 });
 
-app.post('/enter-rifa', async (req, res) => {
+app.post('/entrar', async (req, res) => {
     try {
         const { rifaAddress, quantidadeRifas } = req.body;
+        const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, wallet);
 
-        const RifaContract = new ethers.Contract(rifaAddress, rifaAbi, wallet);
-
-        const tx = await RifaContract.entrar(quantidadeRifas);
+        // Tentativa de entrada na rifa
+        const tx = await rifaContract.entrar(quantidadeRifas);
         await tx.wait();
-        
-        res.json({ message: 'Entrada na rifa realizada com sucesso!' });
+
+        res.send({ message: 'Você entrou na rifa com sucesso', tx });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao entrar na rifa' });
+        if (error.message.includes("O sorteio ja foi realizado")) {
+            res.status(400).send({ error: 'O sorteio dessa rifa ja foi realizado' });
+        }
+        else if (error.message.includes("Saldo insuficiente")) {
+            res.status(400).send({ error: 'Saldo insuficiente para entrar na rifa.' });
+        } else if (error.code === 'CALL_EXCEPTION') {
+            res.status(400).send({ error: 'Erro ao tentar executar a transação. Verifique os dados e tente novamente.' });
+        } else {
+            res.status(500).send({ error: error.message });
+        }
     }
 });
+
+
 
 app.get('/rifa/:address/entradas', async (req, res) => {
     try {
