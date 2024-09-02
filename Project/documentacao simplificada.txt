@@ -3,7 +3,7 @@ npx hardhat node
 Em outro terminal: npx hardhat run --network localhost ignition/modules/deployERC20.js
 
 API:
-node server.js
+node api/server.js
 
 FLUXOGRAMA
 Crie uma rifa
