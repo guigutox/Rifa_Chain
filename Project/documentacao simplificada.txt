@@ -32,6 +32,10 @@ entradas da rifa
 GET:http://localhost:3000/rifa/ENDERECO DA RIFA/entradas
 corpo vazio
 
+vagas restantes na rifa
+GET:http://localhost:3000/rifa/ENDERECO DA RIFA/vagas-restantes
+corpo vazio
+
 ARQUIVO .ENV
 PRIVATE_KEY= private key da primeira conta que aparece no npx hardhat node
 HARDHAT_RPC_URL=http://localhost:8545

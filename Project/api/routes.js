@@ -119,4 +119,19 @@ router.post('/approve', async (req, res) => {
     }
 });
 
+router.get('/rifa/:address/vagas-restantes', async (req, res) => {
+    try {
+        const { address } = req.params;
+
+        const RifaContract = new ethers.Contract(address, rifaAbi, wallet);
+        const vagasRestantes = await RifaContract.vagasRestantes();
+         res.json({ vagasRestantes: vagasRestantes.toString() });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao obter as vagas restantes da rifa' });
+    }
+
+});
+
+
 module.exports = router;
