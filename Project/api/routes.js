@@ -4,6 +4,7 @@ const express = require('express');
 const { ethers } = require("hardhat"); // extremamente importante, voce importa o ethers do hardhat, nao do do ethers
 const fs = require('fs');
 const path = require('path');
+const rifaRepository = require("./infra/helper/repositories/rifa-repository");
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 
@@ -36,7 +37,15 @@ router.post('/criar-rifa', async (req, res) => {
         const Rifa = await ethers.getContractFactory("Rifa", wallet);
         const rifa = await Rifa.deploy(realDigitalAddress, maxEntradas, ethers.parseUnits(valorEntrada, 18));
         await rifa.waitForDeployment();
-        
+
+        const novaRifa = new rifaRepository({
+                address: await rifa.getAddress(),
+                valorEntrada: valorEntrada,
+                maxEntradas: maxEntradas
+        });
+
+        await novaRifa.save();
+
         res.json({ message: 'Rifa criada com sucesso!', rifaAddress: await rifa.getAddress() });
     } catch (error) {
         console.error(error);
