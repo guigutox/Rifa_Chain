@@ -126,34 +126,23 @@ router.post('/entrar', async (req, res) => {
 
 ///////////////// ROTAS PASSIVEIS DE SEREM TIRADAS: essas 2 informacoes ja estao sendo guardadas no banco de dados
 //Rota para verificar a quantidade de entradas na rifa
-router.get('/rifa/:address/entradas', async (req, res) => {
+router.get('/rifa/entradas', async (req, res) => {
     try {
-        const { address } = req.params;
+        const { rifaId } = req.body;
 
-        const RifaContract = new ethers.Contract(address, rifaAbi, wallet);
-        const entradas = await RifaContract.getEntradas();
-        
-        res.json({ entradas });
+        // Busca a rifa pelo ID no banco de dados
+        const rifaData = await rifaRepository.findById(rifaId);
+        if (!rifaData) {
+        return res.status(404).send({ error: 'Rifa não encontrada' });
+        }
+        const entradas = rifaData.maxEntradas - rifaData.entradasRestantes;
+        res.json({ entradas: entradas });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao obter as entradas da rifa' });
     }
 });
 
-//Rota para verificar quantas entradas a rifa ja teve
-router.get('/rifa/:address/tokens-acumulados', async (req, res) => {
-    try {
-        const { address } = req.params;
-
-        const RifaContract = new ethers.Contract(address, rifaAbi, wallet);
-        const tokensAcumulados = await RifaContract.TokensAcumulados();
-        
-        res.json({ tokensAcumulados: ethers.formatUnits(tokensAcumulados, 18) });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao obter os tokens acumulados' });
-    }
-});
 /////////////////////
 //Rota que autoriza o contrato a gastar tokens
 router.post('/approve', async (req, res) => {

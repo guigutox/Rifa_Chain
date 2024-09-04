@@ -120,47 +120,35 @@ Exemplo:
 }
 ```
 
----
-
-GET http://localhost:3000/rifa/ENDERECO DA RIFA/tokens-acumulados
-
-Descrição: Rota para verificar a quantidade de tokens acumulados na rifa, passando o endereço da rifa na URL.
-
-Exemplo:
-
-```
-GET http://localhost:3000/rifa/0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6/tokens-acumulados
-
-```
-
-Response:
-
-```
-{
-    "tokensAcumulados": "20.0"
-}
-```
 
 ---
 
-GET http://localhost:3000/rifa/ENDERECO DA RIFA/entradas
+GET http://localhost:3000/rifa/entradas
 
 Descrição: Rota para verificar a quantidade de entradas que já foram realizadas na rifa, passando o endereço da rifa na URL
 
+O request deve conter os seguintes campos:
+
+```
+{
+    "rifaId": "Id da rifa gerado pelo mongo DB"
+}
+```
+
 Exemplo:
 
 ```
-http://localhost:3000/rifa/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9/entradas
+  {
+    "rifaId": "66d8a505afa36cc7a69dd0b4"
+  }
+
 ```
 
 Response:
 
 ```
 {
-    "entradas": [
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-    ]
+    "entradas": 2
 }
 ```
 
