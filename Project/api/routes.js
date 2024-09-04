@@ -221,6 +221,49 @@ router.post('/sorteio', async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
+// Rota para obter o saldo de tokens de um endereço
+router.get('/balance/:address', async (req, res) => {
+    try {
+        const { address } = req.params;
+
+        // Verifica se o endereço é válido
+        if (!ethers.isAddress(address)) {
+            return res.status(400).send({ error: 'Endereço inválido' });
+        }
+
+        // Obtém o saldo de tokens do endereço
+        const balance = await RealDigitalContract.balanceOf(address);
+
+        res.json({ balance: ethers.formatUnits(balance, 18) });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao obter o saldo de tokens' });
+    }
+});
+
+// Rota para mintar novos tokens para um endereço
+router.post('/mint', async (req, res) => {
+    try {
+        const { to, amount } = req.body;
+
+        // Verifica se o endereço é válido
+        if (!ethers.isAddress(to)) {
+            return res.status(400).send({ error: 'Endereço inválido' });
+        }
+
+        const amountToMint = ethers.parseUnits(amount, 18); // Converte a quantia para DREX (18 casas decimais)
+
+        // Chama a função mint do contrato RealDigital
+        const tx = await RealDigitalContract.mint(to, amountToMint);
+        await tx.wait();  // Aguardando a confirmação da transação
+
+        res.send({ message: 'Tokens mintados com sucesso', tx });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: 'Erro ao mintar tokens' });
+    }
+});
+
 
 
 module.exports = router;

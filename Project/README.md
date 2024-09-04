@@ -184,6 +184,8 @@ Response:
 }
 ```
 
+---
+
 POST http://localhost:3000/sorteio
 
 Descrição: Rota para escolher um vencedor de uma rifa
@@ -195,4 +197,42 @@ Exemplo:
   "rifaId": "ID DA RIFA",
 }
 ```
+
+---
+
+GET  http://localhost:3000/balance/ENDERECO-DA-CARTEIRA
+
+Descrição: Rota para saber quantos tokens uma wallet possui
+
+Exemplo:
+
+```
+http://localhost:3000/balance/0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+
+```
+
+Response:
+
+```
+{
+    "balance": "100.0"
+}
+```
+---
+
+POST  http://localhost:3000/mint
+
+Descrição: Minta tokens para um determinado endereço
+
+Exemplo:
+
+```
+{
+  "to": "endereco",
+  "amount": "quantidade"
+}
+
+```
+
+
 
