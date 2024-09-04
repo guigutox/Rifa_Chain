@@ -80,7 +80,7 @@ O request deve conter os seguintes campos:
 
 ```
 {
-    "rifaAddress": "endereço da rifa que foi instanciada na rota criar rifa",
+    "rifaId": "endereço da rifa que foi instanciada na rota criar rifa",
     "amount": "quantidade que permitira gastar"
 }
 ```
@@ -89,7 +89,7 @@ Exemplo:
 
 ```
 {
-  "rifaAddress": "ENDERECO DA RIFA",
+  "rifaId: "ID DA RIFA",
   "amount": "20"
 }
 
@@ -106,7 +106,7 @@ O request deve conter os seguintes campos:
 
 ```
 {
-  "rifaAddress": "ENDERECO DA RIFA",
+  "rifaId": "ID DA RIFA",
   "quantidadeRifas": Quantidade de rifas a serem compradas
 }
 ```
@@ -115,7 +115,7 @@ Exemplo:
 
 ```
 {
-  "rifaAddress": "ENDERECO DA RIFA",
+  "rifaId": "ID DA RIFA",
   "quantidadeRifas": 2
 }
 ```
@@ -183,3 +183,16 @@ Response:
     "vagasRestantes": "98"
 }
 ```
+
+POST http://localhost:3000/sorteio
+
+Descrição: Rota para escolher um vencedor de uma rifa
+
+Exemplo:
+
+```
+{
+  "rifaId": "ID DA RIFA",
+}
+```
+
