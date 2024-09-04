@@ -8,6 +8,7 @@ const rifaRepository = require("./infra/helper/repositories/rifa-repository");
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 
+
 //configuração de carteira e provider
 const provider = new ethers.JsonRpcProvider(process.env.HARDHAT_RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
@@ -56,7 +57,7 @@ router.post('/criar-rifa', async (req, res) => {
 
         await novaRifa.save();
 
-        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: rifaAddress });
+        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: rifaAddress }); // ARRUMAR PARA RETORNAR O ID DA RIFA TAMBÉM
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar a rifa' });
