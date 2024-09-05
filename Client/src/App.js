@@ -25,8 +25,9 @@ function App() {
         }
     };
 
+    document.title = "Rifa";
     return (
-        <div>
+        <div>      
             <MetaMaskConnect setWalletAddress={setWalletAddress} />
             <div>
                 <input
