@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import MetaMaskConnect from './components/MetaMaskConnect';
 import { enterRaffle } from './api/rifa';
 import './App.css';
+import ApproveRaffle from './components/ApproveRaffle';
+import EnterRaffle from './components/EnterRaffle';
 
 function App() {
     const [rifaId, setRifaId] = useState("");
@@ -29,24 +31,10 @@ function App() {
     return (
         <div>      
             <MetaMaskConnect setWalletAddress={setWalletAddress} />
-            <div>
-                <input
-                    type="text"
-                    placeholder="ID da Rifa"
-                    value={rifaId}
-                    onChange={(e) => setRifaId(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Quantidade de Rifas"
-                    value={quantidadeRifas}
-                    onChange={(e) => setQuantidadeRifas(e.target.value)}
-                />
-                <button onClick={handleEnterRaffle}>Entrar na Rifa</button>
-            </div>
-            {message && <p>{message}</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <EnterRaffle/>
+            <ApproveRaffle />
         </div>
+        
     );
 }
 
