@@ -30,6 +30,8 @@ const realDigitalAddress = process.env.CONTRACT_ADDRESS_REALDIGITAL;
 const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, wallet);
 
 //Rota para criar Rifa
+// Rota para criar Rifa
+//Rota para criar Rifa
 router.post('/criar-rifa', async (req, res) => {
     try {
         const { maxEntradas, valorEntrada } = req.body;
@@ -56,7 +58,7 @@ router.post('/criar-rifa', async (req, res) => {
 
         await novaRifa.save();
 
-        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: rifaAddress }); // ARRUMAR PARA RETORNAR O ID DA RIFA TAMBÉM
+        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: rifaAddress });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar a rifa' });
@@ -113,31 +115,8 @@ router.get('/rifa/entradas', async (req, res) => {
 });
 
 /////////////////////
-//Rota que autoriza o contrato a gastar tokens
-router.post('/approve', async (req, res) => {
-    try {
-        const { rifaId, amount } = req.body;  // Recebendo o ID da rifa e a quantia
-        
-        // Busca a rifa no banco de dados pelo ID
-        const rifa = await rifaRepository.findById(rifaId);
-        if (!rifa) {
-            return res.status(404).send({ error: 'Rifa não encontrada' });
-        }
+//sem necessidade de approve no backend
 
-        const amountToApprove = ethers.parseUnits(amount, 18); // Convertendo a quantia para DREX (18 casas decimais)
-        
-        // Criando uma instância do contrato Rifa com o endereço da rifa encontrado no banco de dados
-        const rifaContract = new ethers.Contract(rifa.address, rifaAbi, wallet);
-        
-        // Chamando a função approve no contrato RealDigital para o endereço da rifa
-        const tx = await RealDigitalContract.approve(rifaContract.getAddress(), amountToApprove);
-        await tx.wait();  // Aguardando a confirmação da transação
-
-        res.send({ message: 'Aprovação realizada com sucesso', tx });
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
 
 router.get('/rifa/:address/vagas-restantes', async (req, res) => {
     try {
@@ -199,6 +178,7 @@ router.get('/balance/:address', async (req, res) => {
     }
 });
 
+/* Decidir se vamos armazenar os mint realizados no banco de dados, se nao, vai de vala também
 // Rota para mintar novos tokens para um endereço
 router.post('/mint', async (req, res) => {
     try {
@@ -221,6 +201,7 @@ router.post('/mint', async (req, res) => {
         res.status(500).send({ error: 'Erro ao mintar tokens' });
     }
 });
+*/
 // Nova rota para buscar informações do contrato
 router.get('/rifa/:rifaId', async (req, res) => {
     try {
@@ -239,6 +220,19 @@ router.get('/rifa/:rifaId', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao obter informações da rifa' });
+    }
+});
+// Rota para fornecer o endereço e a ABI do contrato RealDigital
+router.get('/real-digital-info', async (req, res) => {
+    try {
+        // Envie o endereço e a ABI do contrato para o frontend
+        res.json({
+            address: realDigitalAddress, // Endereço do contrato RealDigital.sol
+            abi: realDigitalAbi          // ABI do contrato RealDigital.sol
+        });
+    } catch (error) {
+        console.error('Erro ao obter informações do contrato RealDigital:', error);
+        res.status(500).json({ error: 'Erro ao obter informações do contrato RealDigital' });
     }
 });
 

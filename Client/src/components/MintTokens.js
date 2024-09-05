@@ -9,14 +9,24 @@ const MintTokens = () => {
 
   const handleMint = async () => {
     try {
-      const response = await mintTokens(to, amount);
+      if (!window.ethereum) throw new Error('MetaMask não está instalada');
+  
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = provider.getSigner();
+      const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, signer);
+  
+      const amountToMint = ethers.parseUnits(amount, 18);
+      const tx = await RealDigitalContract.mint(to, amountToMint);
+      await tx.wait();
+  
       setMessage('Tokens mintados com sucesso!');
-      setError('');
     } catch (err) {
+      console.error(err);
       setError(err.message);
-      setMessage('');
     }
   };
+  
 
   return (
     <div>
