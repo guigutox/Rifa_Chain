@@ -6,6 +6,7 @@ import { enterRaffle } from './api/rifa';
 import './App.css';
 import ApproveRaffle from './components/ApproveRaffle';
 import EnterRaffle from './components/entrar';
+import MintTokens from './components/MintTokens';
 
 function App() {
     const [rifaId, setRifaId] = useState("");
@@ -23,6 +24,7 @@ function App() {
             <MetaMaskConnect setWalletAddress={setWalletAddress} />
             <EnterRaffle/>
             <ApproveRaffle />
+            <MintTokens/>
         </div>
         
     );

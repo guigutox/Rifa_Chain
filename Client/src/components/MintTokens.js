@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { mintTokens } from '../api/rifa';
+import { ethers } from 'ethers';
 
 const MintTokens = () => {
   const [to, setTo] = useState('');
@@ -13,7 +14,13 @@ const MintTokens = () => {
   
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = provider.getSigner();
+      const signer = await provider.getSigner();
+
+      // Obter o endereço e a ABI do contrato RealDigital a partir da nova rota
+      const realDigitalResponse = await fetch('/real-digital-info');
+      
+      const { address: realDigitalAddress, abi: realDigitalAbi } = await realDigitalResponse.json();
+
       const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, signer);
   
       const amountToMint = ethers.parseUnits(amount, 18);
