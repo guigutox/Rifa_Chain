@@ -56,7 +56,7 @@ router.post('/criar-rifa', async (req, res) => {
 
         await novaRifa.save();
 
-        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: rifaAddress });
+        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: rifaAddress, rifaId: novaRifa._id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar a rifa' });
@@ -252,7 +252,6 @@ router.post('/mint', async (req, res) => {
         res.status(500).send({ error: 'Erro ao mintar tokens' });
     }
 });
-
 
 
 module.exports = router;
