@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
-import { ethers } from 'ethers'; // Importar ethers para o frontend
+import { ethers } from 'ethers';
+import styled from 'styled-components';
+
+// Estilizando as mensagens
+const Message = styled.p`
+  color: green;
+  font-size: 1.2em;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #fdd;
+  padding: 10px;
+  border-radius: 5px;
+`;
 
 const EnterRaffle = () => {
   const [rifaId, setRifaId] = useState('');
@@ -16,23 +32,35 @@ const EnterRaffle = () => {
       // Solicitar a conexão da MetaMask
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-      // Criar o provider e o signer da MetaMask
       const provider = new ethers.BrowserProvider(window.ethereum);
-      
-      // Usando "await provider.getSigner()" para obter o signer da conta conectada na MetaMask
       const signer = await provider.getSigner();
 
-      // Obter os dados da rifa a partir do backend (endereço do contrato e ABI)
-      const response = await fetch(`/rifa/${rifaId}`);
-      const { address: rifaAddress, abi: rifaAbi } = await response.json();
+      // Verificando se o ID da rifa está presente
+      if (!rifaId) {
+        throw new Error('🛑 O ID da rifa é obrigatório 🛑 ');
+      }
 
-      // Criar uma instância do contrato usando o endereço da rifa e a ABI
+      if (!quantidadeRifas) {
+        throw new Error('🛑 A quantidade de rifas é obrigatória 🛑');
+      }
+
+      // Obter os dados da rifa do backend
+      const response = await fetch(`/rifa/${rifaId}`);
+      const data = await response.json();
+
+      // Verificar se a resposta contém o endereço da rifa
+      if (!data.address) {
+        throw new Error('Endereço da rifa não encontrado');
+      }
+
+      const { address: rifaAddress, abi: rifaAbi } = data;
+
+      // Criar instância do contrato
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
 
-      // Interagir com o contrato chamando a função `entrar`
+      // Interagir com o contrato
       const tx = await rifaContract.entrar(quantidadeRifas);
 
-      // Aguardar a confirmação da transação
       await tx.wait();
 
       setMessage('Você entrou na rifa com sucesso!');
@@ -62,8 +90,8 @@ const EnterRaffle = () => {
         onChange={(e) => setQuantidadeRifas(e.target.value)}
       />
       <button onClick={handleEnterRaffle}>Entrar na Rifa</button>
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {message && <Message>{message}</Message>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </div>
   );
 };

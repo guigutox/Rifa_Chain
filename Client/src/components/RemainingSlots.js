@@ -8,11 +8,13 @@ const RemainingSlots = () => {
 
   const handleGetRemainingSlots = async () => {
     try {
+      if (!address) throw new Error('Por favor, insira um endereço de rifa válido.');
       const response = await getRemainingSlots(address);
+      if (!response.vagasRestantes && response.vagasRestantes !== 0) throw new Error('Não foi possível recuperar as vagas restantes.');
       setVagasRestantes(response.vagasRestantes);
       setError('');
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Erro ao buscar as vagas restantes.');
       setVagasRestantes('');
     }
   };
@@ -20,7 +22,7 @@ const RemainingSlots = () => {
   return (
     <div>
       <h2>Vagas Restantes da Rifa</h2>
-      <label for="address">Endereço da Rifa</label>
+      <label>Endereço da Rifa</label>
       <input
         type="text"
         placeholder="0x1234567890123456789012345678901234567890"

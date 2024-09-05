@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
+import styled from 'styled-components';
+
+const Message = styled.p`
+  color: green;
+  font-size: 1.2em;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #fdd;
+  padding: 10px;
+  border-radius: 5px;
+`;
 
 const SorteioRaffle = () => {
   const [rifaId, setRifaId] = useState('');
@@ -9,21 +24,18 @@ const SorteioRaffle = () => {
   const handleSorteio = async () => {
     try {
       if (!window.ethereum) throw new Error('MetaMask não está instalada');
+      if (!rifaId) throw new Error('🛑O ID da rifa é obrigatório🛑');
 
-      // Solicitar a conexão da MetaMask
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
       const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = provider.getSigner();
+      const signer = await provider.getSigner();
 
-      // Obter os dados da rifa a partir do backend
       const response = await fetch(`/rifa/${rifaId}`);
       const { address: rifaAddress, abi: rifaAbi } = await response.json();
 
-      // Criar uma instância do contrato usando o endereço da rifa e a ABI
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
 
-      // Interagir com o contrato chamando a função `sorteio`
       const tx = await rifaContract.sorteio();
       await tx.wait();
 
@@ -47,8 +59,8 @@ const SorteioRaffle = () => {
         onChange={(e) => setRifaId(e.target.value)}
       />
       <button onClick={handleSorteio}>Realizar Sorteio</button>
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {message && <Message>{message}</Message>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </div>
   );
 };

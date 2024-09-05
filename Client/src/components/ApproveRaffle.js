@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
+import styled from 'styled-components';
+
+const Message = styled.p`
+  color: green;
+  font-size: 1.2em;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #fdd;
+  padding: 10px;
+  border-radius: 5px;
+`;
 
 const ApproveRaffle = () => {
   const [amount, setAmount] = useState('');
@@ -11,23 +26,23 @@ const ApproveRaffle = () => {
     try {
       if (!window.ethereum) throw new Error('MetaMask não está instalada');
 
-      // Solicitar a conexão da MetaMask
+      if (!rifaId) throw new Error('🛑 O ID da rifa é obrigatório 🛑');
+      if (!amount) throw new Error('🛑 A quantidade é obrigatória 🛑');
+      
+
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      // Obter os dados da rifa a partir do backend
       const rifaResponse = await fetch(`/rifa/${rifaId}`);
       const { address: rifaAddress } = await rifaResponse.json();
 
-      // Obter o endereço e a ABI do contrato RealDigital a partir da nova rota
       const realDigitalResponse = await fetch('/real-digital-info');
       const { address: realDigitalAddress, abi: realDigitalAbi } = await realDigitalResponse.json();
 
-      // Instanciar o contrato RealDigital e aprovar a transação
       const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, signer);
-      const amountToApprove = ethers.parseUnits(amount, 18); // Supondo que o token usa 18 decimais
+      const amountToApprove = ethers.parseUnits(amount, 18);
 
       const tx = await RealDigitalContract.approve(rifaAddress, amountToApprove);
       await tx.wait();
@@ -59,8 +74,8 @@ const ApproveRaffle = () => {
         onChange={(e) => setAmount(e.target.value)}
       />
       <button onClick={handleApprove}>Aprovar</button>
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {message && <Message>{message}</Message>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </div>
   );
 };

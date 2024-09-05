@@ -1,3 +1,4 @@
+/* App.css */
 /* Centraliza o conteúdo da aplicação */
 .App {
   text-align: center;
@@ -30,14 +31,6 @@ label {
   max-width: 300px;
 }
 
-/* Estilo quando a label está associada a um input focado */
-input[type="text"]:focus + label,
-input[type="number"]:focus + label {
-  color: #007bff;
-  font-weight: bold;
-}
-
-/* Estilo para entradas de texto e número */
 input[type="text"],
 input[type="number"] {
   width: 100%;

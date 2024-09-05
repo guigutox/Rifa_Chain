@@ -8,11 +8,13 @@ const RaffleEntries = () => {
 
   const handleGetEntries = async () => {
     try {
+      if (!rifaId) throw new Error('🛑 ID da rifa é obrigatório. 🛑');
       const response = await getRaffleEntries(rifaId);
+      if (!response.entradas) throw new Error('Entradas não encontradas para esta rifa.'); // Validação do retorno
       setEntradas(response.entradas);
       setError('');
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Erro ao buscar as entradas da rifa.');
       setEntradas('');
     }
   };
@@ -20,7 +22,7 @@ const RaffleEntries = () => {
   return (
     <div>
       <h2>Verificar Entradas da Rifa</h2>
-      <label for="rifaId">ID da Rifa</label>
+      <label>ID da Rifa</label>
       <input
         type="text"
         placeholder="0x1234567890123456789012345678901234567890"

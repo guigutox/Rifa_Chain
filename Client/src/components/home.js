@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import EnterRaffle from './entrar';
-import RemainingSlots from './RemainingSlots';
-import ChooseWinner from './ChooseWinner';
-import GetBalance from './GetBalance';
-import MintTokens from './MintTokens';
 import ApproveRaffle from './ApproveRaffle';
+import ChooseWinner from './ChooseWinner';
+import EnterRaffle from './entrar';
+import GetBalance from './GetBalance';
+import MetaMaskConnect from './MetaMaskConnect';
+import MintTokens from './MintTokens';
+import RaffleEntries from './RaffleEntries';
+import RemainingSlots from './RemainingSlots';
 import RifaList from './RifaList';
+
 
 const Home = () => {
     const [activeComponent, setActiveComponent] = useState('enterRaffle');
@@ -14,6 +17,8 @@ const Home = () => {
         switch (activeComponent) {
             case 'enterRaffle':
                 return <EnterRaffle />;
+            case 'raffleEntries':
+                return <RaffleEntries />;
             case 'remainingSlots':
                 return <RemainingSlots />;
             case 'chooseWinner':
@@ -41,6 +46,9 @@ const Home = () => {
                     <li onClick={() => setActiveComponent('enterRaffle')}>
                         Entrar na Rifa
                     </li>
+                    <li onClick={() => setActiveComponent('raffleEntries')}>
+                        Verificar Entradas
+                    </li>
                     <li onClick={() => setActiveComponent('remainingSlots')}>
                         Verificar Vagas Restantes
                     </li>
@@ -56,6 +64,7 @@ const Home = () => {
                     <li onClick={() => setActiveComponent('approveRaffle')}>
                         Aprovar Rifa
                     </li>
+
                 </ul>
             </nav>
 

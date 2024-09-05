@@ -122,7 +122,7 @@ npx hardhat run --network localhost ignition/modules/deployERC20.js
 
 ### API:
 
-Em outro terminal (sem fechar os anteriores):
+Em outro terminal || no mesmo que voce deu deply no contrato (sem fechar os anteriores):
 
 ```bash
 node api/server.js
