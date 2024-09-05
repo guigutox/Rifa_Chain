@@ -253,5 +253,27 @@ router.post('/mint', async (req, res) => {
     }
 });
 
+router.get('/rifa/listar-entradas', async (req, res) => {
+    try {
+        const { rifaId } = req.body;
+
+        
+        const rifa = await rifaRepository.findById(rifaId);
+        if (!rifa) {
+            return res.status(404).send({ error: 'Rifa não encontrada' });
+        }
+        const rifaContract = new ethers.Contract(rifa.address, rifaAbi, wallet);
+
+
+        const entradas = await rifaContract.getEntradas();
+
+        res.json({ entradas: entradas });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao obter as entradas da rifa' });
+    }
+});
+
+
 
 module.exports = router;

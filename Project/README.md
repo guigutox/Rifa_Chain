@@ -223,4 +223,34 @@ Exemplo:
 ```
 
 
+GET http://localhost:3000/rifa/listar-entradas
 
+Descrição: Rota que devolve todas as entradas que foram realizadas
+
+O request deve conter os seguintes campos:
+
+```
+{
+    "rifaId": "Id da rifa gerado pelo mongo DB"
+}
+```
+
+Exemplo:
+
+```
+  {
+    "rifaId": "66d8a505afa36cc7a69dd0b4"
+  }
+
+```
+
+Response:
+
+```
+{
+    "entradas": [
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+    ]
+}
+```
