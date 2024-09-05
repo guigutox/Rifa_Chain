@@ -1,5 +1,4 @@
 const router = require("express").Router();
-
 const express = require('express');
 const { ethers } = require("hardhat"); // extremamente importante, voce importa o ethers do hardhat, nao do  ethers
 const fs = require('fs');
@@ -77,52 +76,21 @@ router.post('/entrar', async (req, res) => {
             return res.status(404).send({ error: 'Rifa não encontrada' });
         }
 
-        // Cria uma instância do contrato com o endereço da rifa
-        const rifaContract = new ethers.Contract(rifaData.address, rifaAbi, wallet);
-
-        // Verifica se o sorteio já foi realizado
-        if (rifaData.sorteioRealizado) {
-            return res.status(400).send({ error: 'O sorteio desta rifa já foi realizado' });
-        }
-
-        // Tenta realizar a entrada na rifa
-        const tx = await rifaContract.entrar(quantidadeRifas);
-        await tx.wait();
-
-        // Atualiza o número de entradas restantes
+        // Aqui apenas atualize os dados no banco
         const novasEntradasRestantes = rifaData.entradasRestantes - quantidadeRifas;
+        const sorteioRealizado = novasEntradasRestantes <= 0 ? true : rifaData.sorteioRealizado;
 
-        // Atualiza a quantidade de tokens acumulados na rifa
-        const tokensAcumulados = await rifaContract.TokensAcumulados();
-
-        // Verifica se todas as entradas foram compradas
-        let sorteioRealizado = rifaData.sorteioRealizado;
-        if (novasEntradasRestantes <= 0) {
-            sorteioRealizado = true;
-            // Opcional: Pode-se chamar a função `escolherVencedor` automaticamente aqui, se desejado.
-            // await rifaContract.escolherVencedor();
-        }
-
-        // Atualiza os dados da rifa no banco de dados
+        // Atualizar os dados no banco de dados
         rifaData.entradasRestantes = novasEntradasRestantes;
-        rifaData.tokensAcumulados = ethers.formatUnits(tokensAcumulados, 18);
-        rifaData.sorteioRealizado = sorteioRealizado;
-
         await rifaData.save();
 
-        res.send({ message: 'Você entrou na rifa com sucesso', tx });
+        res.send({ message: 'Rifa atualizada com sucesso' });
     } catch (error) {
-        if (error.message.includes("O sorteio ja foi realizado")) {
-            res.status(400).send({ error: 'O sorteio dessa rifa já foi realizado' });
-        } else if (error.message.includes("Saldo insuficiente")) {
-            res.status(400).send({ error: 'Saldo insuficiente para entrar na rifa.' });
-        } else if (error.code === 'CALL_EXCEPTION') {
-            res.status(400).send({ error: 'Erro ao tentar executar a transação. Verifique os dados e tente novamente.' });
-        } else {
-            res.status(500).send({ error: error.message });
-        }
+        console.error(error);
+        res.status(500).send({ error: error.message });
     }
 });
+
 
 
 ///////////////// ROTAS PASSIVEIS DE SEREM TIRADAS: essas 2 informacoes ja estao sendo guardadas no banco de dados
@@ -251,6 +219,26 @@ router.post('/mint', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: 'Erro ao mintar tokens' });
+    }
+});
+// Nova rota para buscar informações do contrato
+router.get('/rifa/:rifaId', async (req, res) => {
+    try {
+        const { rifaId } = req.params;
+
+        // Busque a rifa no banco de dados
+        const rifaData = await rifaRepository.findById(rifaId);
+        if (!rifaData) {
+            return res.status(404).send({ error: 'Rifa não encontrada' });
+        }
+
+        // Envie de volta o endereço e a ABI do contrato
+        res.json({
+            address: rifaData.address,
+            abi: rifaAbi
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao obter informações da rifa' });
     }
 });
 
