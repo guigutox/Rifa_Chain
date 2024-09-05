@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import MetaMaskConnect from './components/MetaMaskConnect';
 import { enterRaffle } from './api/rifa';
+import './App.css';
 
 function App() {
     const [rifaId, setRifaId] = useState("");
