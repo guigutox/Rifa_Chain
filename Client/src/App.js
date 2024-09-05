@@ -7,6 +7,7 @@ import './App.css';
 import ApproveRaffle from './components/ApproveRaffle';
 import EnterRaffle from './components/entrar';
 import MintTokens from './components/MintTokens';
+import RifaList from './components/RifaList';
 
 function App() {
     const [rifaId, setRifaId] = useState("");
@@ -25,6 +26,7 @@ function App() {
             <EnterRaffle/>
             <ApproveRaffle />
             <MintTokens/>
+            <RifaList/>
         </div>
         
     );

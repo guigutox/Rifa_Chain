@@ -235,6 +235,14 @@ router.get('/real-digital-info', async (req, res) => {
         res.status(500).json({ error: 'Erro ao obter informações do contrato RealDigital' });
     }
 });
+router.get('/rifas', async (req, res) => {
+    try {
+        const rifas = await rifaRepository.find(); // Buscando todas as rifas
+        res.json(rifas);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar rifas' });
+    }
+});
 
 
 
