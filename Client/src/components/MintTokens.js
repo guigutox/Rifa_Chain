@@ -38,15 +38,17 @@ const MintTokens = () => {
   return (
     <div>
       <h2>Mintar Novos Tokens</h2>
+      <label>Endereço</label>
       <input
         type="text"
-        placeholder="Endereço"
+        placeholder="0x1234567890123456789012345678901234567890"
         value={to}
         onChange={(e) => setTo(e.target.value)}
       />
+      <label>Quantidade</label>
       <input
         type="number"
-        placeholder="Quantidade de Tokens"
+        placeholder="100"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
       />

@@ -20,9 +20,10 @@ const RemainingSlots = () => {
   return (
     <div>
       <h2>Vagas Restantes da Rifa</h2>
+      <label for="address">Endereço da Rifa</label>
       <input
         type="text"
-        placeholder="Endereço da Rifa"
+        placeholder="0x1234567890123456789012345678901234567890"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
       />

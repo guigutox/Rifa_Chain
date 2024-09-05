@@ -20,9 +20,10 @@ const GetBalance = () => {
   return (
     <div>
       <h2>Obter Saldo de Tokens</h2>
+      <label for="address">Endereço</label>
       <input
         type="text"
-        placeholder="Endereço"
+        placeholder="0x1234567890123456789012345678901234567890"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
       />

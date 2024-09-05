@@ -47,15 +47,17 @@ const EnterRaffle = () => {
   return (
     <div>
       <h2>Entrar na Rifa</h2>
+      <label>ID da Rifa</label>
       <input
         type="text"
-        placeholder="ID da Rifa"
+        placeholder="0x1234567890123456789012345678901234567890"
         value={rifaId}
         onChange={(e) => setRifaId(e.target.value)}
       />
+      <label>Quantidade de Rifas</label>
       <input
         type="number"
-        placeholder="Quantidade de Rifas"
+        placeholder="20"
         value={quantidadeRifas}
         onChange={(e) => setQuantidadeRifas(e.target.value)}
       />

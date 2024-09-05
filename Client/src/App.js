@@ -8,6 +8,7 @@ import ApproveRaffle from './components/ApproveRaffle';
 import EnterRaffle from './components/entrar';
 import MintTokens from './components/MintTokens';
 import RifaList from './components/RifaList';
+import Home from './components/home';
 
 function App() {
     const [rifaId, setRifaId] = useState("");
@@ -23,10 +24,11 @@ function App() {
     return (
         <div>      
             <MetaMaskConnect setWalletAddress={setWalletAddress} />
-            <EnterRaffle/>
+            <Home/>
+            {/* <EnterRaffle/>
             <ApproveRaffle />
             <MintTokens/>
-            <RifaList/>
+            <RifaList/> */}
         </div>
         
     );

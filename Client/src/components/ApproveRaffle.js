@@ -44,15 +44,17 @@ const ApproveRaffle = () => {
   return (
     <div>
       <h2>Aprovar Rifa</h2>
+      <label>ID da Rifa</label>
       <input
         type="text"
-        placeholder="ID da Rifa"
+        placeholder="0x1234567890123456789012345678901234567890"
         value={rifaId}
         onChange={(e) => setRifaId(e.target.value)}
       />
+      <label>Quantidade</label>
       <input
         type="text"
-        placeholder="Quantidade"
+        placeholder="100"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
       />

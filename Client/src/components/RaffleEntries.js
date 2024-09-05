@@ -20,9 +20,10 @@ const RaffleEntries = () => {
   return (
     <div>
       <h2>Verificar Entradas da Rifa</h2>
+      <label for="rifaId">ID da Rifa</label>
       <input
         type="text"
-        placeholder="ID da Rifa"
+        placeholder="0x1234567890123456789012345678901234567890"
         value={rifaId}
         onChange={(e) => setRifaId(e.target.value)}
       />
