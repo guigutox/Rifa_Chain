@@ -4,12 +4,19 @@
 
 Primeiro, instale as dependências necessárias:
 
-```npm install```
+`npm install`
 
 Em seguida, configure suas variáveis de ambiente:
 
-```cp .env.example .env```
+`cp .env.example .env`
 
+Baixe o mongo
+https://www.mongodb.com/try/download/community
+
+Baixe a GUI do mongo
+https://www.mongodb.com/try/download/compass
+
+Abra o mongo e crie uma nova conexão, sendo ela a conexão localhost na porta 27017
 
 ---
 
@@ -17,22 +24,22 @@ Em seguida, configure suas variáveis de ambiente:
 
 Utilize no terminal:
 
-```npx hardhat node```
+`npx hardhat node`
 
 Em outro terminal utilize:
 
-```npx hardhat run --network localhost ignition/modules/deployERC20.js```
+`npx hardhat run --network localhost ignition/modules/deployERC20.js`
 
 ---
 
 ## Iniciar Aplicação
 
 ### API:
+
 Para executar a API, use o seguinte comando:
-```nodemon api/server.js```
+`nodemon api/server.js`
 
 ---
-
 
 ## ROTAS
 
@@ -44,6 +51,7 @@ Descrição:
 Utilizada para realizar a criação de uma rifa.
 
 O request deve conter os seguintes campos:
+
 ```
 {
   "maxEntradas": quantidade maxima de entradas,
@@ -53,12 +61,14 @@ O request deve conter os seguintes campos:
 ```
 
 Exemplo:
+
 ```
 {
   "maxEntradas": 100,
   "valorEntrada": "10"
 }
 ```
+
 ---
 
 POST http://localhost:3000/approve
@@ -67,17 +77,19 @@ Descrição:
 Rota utilizada para autorizar a rifa a gastar seus ativos.
 
 O request deve conter os seguintes campos:
+
 ```
 {
-    "rifaAddress": "endereço da rifa que foi instanciada na rota criar rifa",
+    "rifaId": "endereço da rifa que foi instanciada na rota criar rifa",
     "amount": "quantidade que permitira gastar"
 }
 ```
+
 Exemplo:
 
 ```
 {
-  "rifaAddress": "ENDERECO DA RIFA",
+  "rifaId: "ID DA RIFA",
   "amount": "20"
 }
 
@@ -94,62 +106,51 @@ O request deve conter os seguintes campos:
 
 ```
 {
-  "rifaAddress": "ENDERECO DA RIFA",
+  "rifaId": "ID DA RIFA",
   "quantidadeRifas": Quantidade de rifas a serem compradas
 }
 ```
+
 Exemplo:
 
 ```
 {
-  "rifaAddress": "ENDERECO DA RIFA",
+  "rifaId": "ID DA RIFA",
   "quantidadeRifas": 2
 }
 ```
 
----
-
-GET http://localhost:3000/rifa/ENDERECO DA RIFA/tokens-acumulados
-
-Descrição: Rota para verificar a quantidade de tokens acumulados na rifa, passando o endereço da rifa na URL.
-
-Exemplo:
-```
-GET http://localhost:3000/rifa/0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6/tokens-acumulados
-
-```
-
-
-Response:
-```
-{
-    "tokensAcumulados": "20.0"
-}
-```
 
 ---
 
-GET http://localhost:3000/rifa/ENDERECO DA RIFA/entradas
+GET http://localhost:3000/rifa/entradas
 
 Descrição: Rota para verificar a quantidade de entradas que já foram realizadas na rifa, passando o endereço da rifa na URL
 
+O request deve conter os seguintes campos:
+
+```
+{
+    "rifaId": "Id da rifa gerado pelo mongo DB"
+}
+```
+
 Exemplo:
 
 ```
-http://localhost:3000/rifa/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9/entradas
+  {
+    "rifaId": "66d8a505afa36cc7a69dd0b4"
+  }
+
 ```
 
 Response:
 
 ```
 {
-    "entradas": [
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-    ]
+    "entradas": 2
 }
 ```
-
 
 ---
 
@@ -158,6 +159,7 @@ GET http://localhost:3000/rifa/ENDERECO DA RIFA/vagas-restantes
 Descriação: Rota para verificar quantas entradas restantes há na rifa, passando endereço da rifa pela URL
 
 Exemplo:
+
 ```
 http://localhost:3000/rifa/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9/vagas-restantes
 ```
@@ -169,3 +171,56 @@ Response:
     "vagasRestantes": "98"
 }
 ```
+
+---
+
+POST http://localhost:3000/sorteio
+
+Descrição: Rota para escolher um vencedor de uma rifa
+
+Exemplo:
+
+```
+{
+  "rifaId": "ID DA RIFA",
+}
+```
+
+---
+
+GET  http://localhost:3000/balance/ENDERECO-DA-CARTEIRA
+
+Descrição: Rota para saber quantos tokens uma wallet possui
+
+Exemplo:
+
+```
+http://localhost:3000/balance/0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+
+```
+
+Response:
+
+```
+{
+    "balance": "100.0"
+}
+```
+---
+
+POST  http://localhost:3000/mint
+
+Descrição: Minta tokens para um determinado endereço
+
+Exemplo:
+
+```
+{
+  "to": "endereco",
+  "amount": "quantidade"
+}
+
+```
+
+
+

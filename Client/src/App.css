@@ -1,0 +1,209 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.messageSucess {
+  color: green;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #dfd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.messageError {
+  color: red;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #fdd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Estilo básico para labels */
+label {
+  font-size: 16px;
+  color: white;
+  margin-bottom: 5px;
+  display: block;
+  text-align: left;
+  width: 100%;
+  max-width: 300px;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  margin: 10px 0 15px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #38E4AE;
+  outline: none;
+}
+
+/* Estilo dos botões */
+button {
+  padding: 10px 20px;
+  background-color: #31a882;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+button:hover {
+  background-color: #7BD389;
+}
+
+/* Estilo dos parágrafos */
+p {
+  font-size: 14px;
+  color: white;
+  margin-top: 10px;
+}
+
+h2 {
+  color: white;
+  padding: 15px;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Novo estilo da navbar */
+.navbar {
+  width: 100%;
+  background-color: #343E3D;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+}
+
+.navbar ul li {
+  padding: 14px 20px;
+  cursor: pointer;
+  color: white;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.navbar ul li:hover {
+  background-color: #575757;
+}
+
+/* Estilo para o conteúdo da página */
+.content {
+  margin-top: 20px;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  width: 100%;
+  background-color: #343E3D;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Organização do layout */
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.ListaRifa {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.ListaRifa li {
+  width: 100%;
+  background-color: white;
+  max-width: 400px;
+  color: black;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.RifaConteiner {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Estilos para telas menores que 600px */
+@media (max-width: 600px) {
+  .content {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .ListaRifa li {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .navbar ul {
+    flex-direction: column;
+  }
+
+  .navbar ul li {
+    text-align: center;
+    padding: 10px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    max-width: 100%;
+  }
+}
+
+/* Estilos para telas menores que 400px */
+@media (max-width: 400px) {
+  .content {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .ListaRifa li {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}

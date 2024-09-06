@@ -1,10 +1,11 @@
 const router = require("express").Router();
-
 const express = require('express');
-const { ethers } = require("hardhat"); // extremamente importante, voce importa o ethers do hardhat, nao do do ethers
+const { ethers } = require("hardhat"); // extremamente importante, voce importa o ethers do hardhat, nao do  ethers
 const fs = require('fs');
 const path = require('path');
+const rifaRepository = require("./infra/helper/repositories/rifa-repository");
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+
 
 
 //configuração de carteira e provider
@@ -23,102 +24,68 @@ const rifaJson = JSON.parse(fs.readFileSync(rifaPath, 'utf8'));
 // Extraindo as ABIs
 const realDigitalAbi = realDigitalJson.abi;
 const rifaAbi = rifaJson.abi;
+const rifaBytecode = rifaJson.bytecode;
 
 // Configuração dos contratos
 const realDigitalAddress = process.env.CONTRACT_ADDRESS_REALDIGITAL;
 const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, wallet);
 
+
 //Rota para criar Rifa
 router.post('/criar-rifa', async (req, res) => {
     try {
-        const { maxEntradas, valorEntrada } = req.body;
-        
-        const Rifa = await ethers.getContractFactory("Rifa", wallet);
-        const rifa = await Rifa.deploy(realDigitalAddress, maxEntradas, ethers.parseUnits(valorEntrada, 18));
-        await rifa.waitForDeployment();
-        
-        res.json({ message: 'Rifa criada com sucesso!', rifaAddress: await rifa.getAddress() });
+      const { rifaAddress, maxEntradas, valorEntrada } = req.body;
+  
+      const novaRifa = new rifaRepository({
+        address: rifaAddress,
+        valorEntrada: valorEntrada,
+        maxEntradas: maxEntradas,
+        entradasRestantes: maxEntradas,  // Inicialmente todas as vagas estão disponíveis
+        sorteioRealizado: false,  
+        tokensAcumulados: "0",  
+      });
+  
+      await novaRifa.save();
+  
+      res.json({ message: 'Rifa criada e salva no banco de dados com sucesso!' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar a rifa' });
+      console.error(error);
+      res.status(500).json({ error: 'Erro ao salvar a rifa no banco de dados' });
     }
-});
+  });
+  
 
 
-//Rota para entrar na rifa
-router.post('/entrar', async (req, res) => {
+
+//Rota para atualizar o banco de dados conforme mais pessoas entram na rifa
+router.post('/atualizaDB', async (req, res) => {
     try {
-        const { rifaAddress, quantidadeRifas } = req.body;
-        const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, wallet);
+        const { rifaId, quantidadeRifas } = req.body;
 
-        // Tentativa de entrada na rifa
-        const tx = await rifaContract.entrar(quantidadeRifas);
-        await tx.wait();
-
-        res.send({ message: 'Você entrou na rifa com sucesso', tx });
-    } catch (error) {
-        if (error.message.includes("O sorteio ja foi realizado")) {
-            res.status(400).send({ error: 'O sorteio dessa rifa ja foi realizado' });
+        const rifaData = await rifaRepository.findById(rifaId);
+        if (!rifaData) {
+            return res.status(404).send({ error: 'Rifa não encontrada' });
         }
-        else if (error.message.includes("Saldo insuficiente")) {
-            res.status(400).send({ error: 'Saldo insuficiente para entrar na rifa.' });
-        } else if (error.code === 'CALL_EXCEPTION') {
-            res.status(400).send({ error: 'Erro ao tentar executar a transação. Verifique os dados e tente novamente.' });
-        } else {
-            res.status(500).send({ error: error.message });
+
+        const novasEntradasRestantes = rifaData.entradasRestantes - quantidadeRifas;
+        rifaData.tokensAcumulados += (quantidadeRifas * rifaData.valorEntrada);
+        if(novasEntradasRestantes <= 0){
+            rifaData.sorteioRealizado = true;
+            rifaData.tokensAcumulados = 0;
         }
-    }
-});
+        rifaData.entradasRestantes = novasEntradasRestantes;
+        await rifaData.save();
 
-//Rota para verificar a quantidade de entradas na rifa
-router.get('/rifa/:address/entradas', async (req, res) => {
-    try {
-        const { address } = req.params;
-
-        const RifaContract = new ethers.Contract(address, rifaAbi, wallet);
-        const entradas = await RifaContract.getEntradas();
-        
-        res.json({ entradas });
+        res.send({ message: 'Rifa atualizada com sucesso' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao obter as entradas da rifa' });
-    }
-});
-
-//Rota para verificar quantas entradas a rifa ja teve
-router.get('/rifa/:address/tokens-acumulados', async (req, res) => {
-    try {
-        const { address } = req.params;
-
-        const RifaContract = new ethers.Contract(address, rifaAbi, wallet);
-        const tokensAcumulados = await RifaContract.TokensAcumulados();
-        
-        res.json({ tokensAcumulados: ethers.formatUnits(tokensAcumulados, 18) });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao obter os tokens acumulados' });
-    }
-});
-
-//Rota que autoriza o contrato a gastar tokens
-router.post('/approve', async (req, res) => {
-    try {
-        const { rifaAddress, amount } = req.body;  // Recebendo o endereço da rifa e a quantia
-        const amountToApprove = ethers.parseUnits(amount, 18); // Convertendo a quantia para DREX (18 casas decimais)
-        
-        // Criando uma instância do contrato Rifa com o endereço fornecido
-        const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, wallet);
-        
-        // Chamando a função approve no contrato RealDigital para o endereço da rifa
-        const tx = await RealDigitalContract.approve(rifaContract.getAddress(), amountToApprove);
-        await tx.wait();  // Aguardando a confirmação da transação
-
-        res.send({ message: 'Aprovação realizada com sucesso', tx });
-    } catch (error) {
         res.status(500).send({ error: error.message });
     }
 });
 
+
+
+// ta na mira
 router.get('/rifa/:address/vagas-restantes', async (req, res) => {
     try {
         const { address } = req.params;
@@ -132,6 +99,103 @@ router.get('/rifa/:address/vagas-restantes', async (req, res) => {
     }
 
 });
+
+// Rota para escolher um vencedor JOGAR ISSO PARA O FRONT
+router.post('/sorteio', async (req, res) => {
+    try {
+        const { rifaId } = req.body;
+
+        const rifa = await rifaRepository.findById(rifaId);
+        if (!rifa) {
+            return res.status(404).send({ error: 'Rifa não encontrada' });
+        }
+
+
+        rifa.sorteioRealizado = true;
+        rifa.tokensAcumulados = 0;
+        await rifa.save();
+
+        res.send({ message: 'Sorteio realizado com sucesso' });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+// Rota para obter o saldo de tokens de um endereço
+router.get('/balance/:address', async (req, res) => {
+    try {
+        const { address } = req.params;
+
+        // Verifica se o endereço é válido
+        if (!ethers.isAddress(address)) {
+            return res.status(400).send({ error: 'Endereço inválido' });
+        }
+
+        // Obtém o saldo de tokens do endereço
+        const balance = await RealDigitalContract.balanceOf(address);
+
+        res.json({ balance: ethers.formatUnits(balance, 18) });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao obter o saldo de tokens' });
+    }
+});
+
+
+
+// Nova rota para buscar informações do contrato
+router.get('/rifa/:rifaId', async (req, res) => {
+    try {
+        const { rifaId } = req.params;
+
+
+        const rifaData = await rifaRepository.findById(rifaId);
+        if (!rifaData) {
+            return res.status(404).send({ error: 'Rifa não encontrada' });
+        }
+
+
+        res.json({
+            address: rifaData.address,
+            abi: rifaAbi
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao obter informações da rifa' });
+    }
+});
+// Rota para fornecer o endereço e a ABI do contrato RealDigital
+router.get('/real-digital-info', async (req, res) => {
+    try {
+        // Envie o endereço e a ABI do contrato para o frontend
+        res.json({
+            address: realDigitalAddress, // Endereço do contrato RealDigital.sol
+            abi: realDigitalAbi          // ABI do contrato RealDigital.sol
+        });
+    } catch (error) {
+        console.error('Erro ao obter informações do contrato RealDigital:', error);
+        res.status(500).json({ error: 'Erro ao obter informações do contrato RealDigital' });
+    }
+});
+router.get('/rifas', async (req, res) => {
+    try {
+        const rifas = await rifaRepository.find(); // Buscando todas as rifas
+        res.json(rifas);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar rifas' });
+    }
+});
+router.get('/rifa-abi-bytecode', async (req, res) => {
+    try {
+        res.json({
+            abi: rifaAbi,
+            bytecode: rifaBytecode
+
+
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao obter informações da rifa' });
+    }
+});
+
 
 
 module.exports = router;
