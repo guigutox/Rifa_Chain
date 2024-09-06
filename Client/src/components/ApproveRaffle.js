@@ -1,20 +1,7 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import styled from 'styled-components';
+import '../App.css';
 
-const Message = styled.p`
-  color: green;
-  font-size: 1.2em;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 1.2em;
-  font-weight: bold;
-  background-color: #fdd;
-  padding: 10px;
-  border-radius: 5px;
-`;
 
 const ApproveRaffle = () => {
   const [amount, setAmount] = useState('');
@@ -29,6 +16,13 @@ const ApproveRaffle = () => {
       if (!rifaId) throw new Error('🛑 O ID da rifa é obrigatório 🛑');
       if (!amount) throw new Error('🛑 A quantidade é obrigatória 🛑');
       
+      const response = await fetch(`/rifa/${rifaId}`);
+      const data = await response.json();
+  
+      if (!data.address) {
+        throw new Error('❌ Endereço da rifa não encontrado ❌');
+      }
+
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -47,7 +41,7 @@ const ApproveRaffle = () => {
       const tx = await RealDigitalContract.approve(rifaAddress, amountToApprove);
       await tx.wait();
 
-      setMessage('Aprovação realizada com sucesso!');
+      setMessage('✔️ Aprovação realizada com sucesso! ✔️');
       setError('');
     } catch (err) {
       console.error(err);
@@ -74,8 +68,8 @@ const ApproveRaffle = () => {
         onChange={(e) => setAmount(e.target.value)}
       />
       <button onClick={handleApprove}>Aprovar</button>
-      {message && <Message>{message}</Message>}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {message && <p class = "messageSucess">{message}</p>}
+      {error && <p class = "messageError">{error}</p>}
     </div>
   );
 };

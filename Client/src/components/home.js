@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import ApproveRaffle from './ApproveRaffle';
 import ChooseWinner from './ChooseWinner';
-import EnterRaffle from './entrar';
+import EnterRaffle from './Join';
 import GetBalance from './GetBalance';
-import MetaMaskConnect from './MetaMaskConnect';
 import MintTokens from './MintTokens';
 import RemainingSlots from './RemainingSlots';
 import RifaList from './RifaList';
-import CreateRaffle from './criar-rifa'
+import CreateRaffle from './CreateRaffle'
+import Particle from './Particle.js';
+
 
 
 const Home = () => {
@@ -37,6 +38,8 @@ const Home = () => {
     };
 
     return (
+        <div className="home">
+        <Particle/>
         <div className="container">
             <nav className="navbar">
                 <ul>
@@ -71,6 +74,7 @@ const Home = () => {
             <div className="content">
                 {renderComponent()}
             </div>
+        </div>
         </div>
     );
 };

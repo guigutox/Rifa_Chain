@@ -18,11 +18,9 @@ function MetaMaskConnect() {
   };
 
   return (
-    <div>
       <button onClick={connectWallet}>
         {walletAddress ? `Conectado: ${walletAddress}` : 'Conectar MetaMask'}
-      </button> {/* Botão para conectar a MetaMask */}
-    </div>
+      </button> 
   );
 }
 

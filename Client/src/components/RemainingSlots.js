@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { getRemainingSlots } from '../api/rifa';
+import '../App.css';
+
 
 const RemainingSlots = () => {
   const [address, setAddress] = useState('');
@@ -8,7 +10,7 @@ const RemainingSlots = () => {
 
   const handleGetRemainingSlots = async () => {
     try {
-      if (!address) throw new Error('Por favor, insira um endereço de rifa válido.');
+      if (!address) throw new Error('🛑 O endereço é obrigatório 🛑');
       const response = await getRemainingSlots(address);
       if (!response.vagasRestantes && response.vagasRestantes !== 0) throw new Error('Não foi possível recuperar as vagas restantes.');
       setVagasRestantes(response.vagasRestantes);
@@ -31,7 +33,7 @@ const RemainingSlots = () => {
       />
       <button onClick={handleGetRemainingSlots}>Verificar Vagas Restantes</button>
       {vagasRestantes && <p>Vagas Restantes: {vagasRestantes}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className = "messageError">{error}</p>}   
     </div>
   );
 };

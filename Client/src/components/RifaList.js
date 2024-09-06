@@ -23,23 +23,23 @@ const RifaList = () => {
 
   return (
     <div>
-      <h1>Lista de Rifas</h1>
+      <h2>Lista de Rifas</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>} {/* Exibe o erro */}
       {rifas.length === 0 && !error ? (
         <p>Nenhuma rifa disponível</p>
       ) : (
-        <ul>
+        <div className='RifaConteiner'>
           {rifas.map((rifa) => (
-            <li key={rifa._id}>
-              <p>Endereço: {rifa.address}</p>
-              <p>Id da rifa: {rifa._id}</p>
-              <p>Valor da Entrada: {rifa.valorEntrada}</p>
-              <p>Entradas Restantes: {rifa.entradasRestantes}</p>
-              <p>Sorteio Realizado: {rifa.sorteioRealizado ? 'Sim' : 'Não'}</p>
-              <p>Tokens Acumulados: {rifa.tokensAcumulados}</p>
-            </li>
+            <ul key={rifa._id} className='ListaRifa'>
+              <li>Endereço: {rifa.address}</li>
+              <li>Id da rifa: {rifa._id}</li>
+              <li>Valor da Entrada: {rifa.valorEntrada}</li>
+              <li>Entradas Restantes: {rifa.entradasRestantes}</li>
+              <li>Sorteio Realizado: {rifa.sorteioRealizado ? 'Sim' : 'Não'}</li>
+              <li>Tokens Acumulados: {rifa.tokensAcumulados}</li>
+            </ul>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

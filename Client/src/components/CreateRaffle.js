@@ -1,20 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import styled from 'styled-components';
-
-const Message = styled.p`
-  color: green;
-  font-size: 1.2em;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 1.2em;
-  font-weight: bold;
-  background-color: #fdd;
-  padding: 10px;
-  border-radius: 5px;
-`;
+import '../App.css';
 
 const CreateRaffle = () => {
   const [maxEntradas, setMaxEntradas] = useState('');
@@ -25,6 +11,9 @@ const CreateRaffle = () => {
   const handleCreateRaffle = async () => {
     try {
       if (!window.ethereum) throw new Error('MetaMask não está instalada');
+      if (!maxEntradas) throw new Error('🛑 Máximo de entradas não informado 🛑');
+      if (!valorEntrada) throw new Error('🛑 Valor por entrada não informado 🛑');
+
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -60,7 +49,7 @@ const CreateRaffle = () => {
         throw new Error('Erro ao salvar a rifa no banco de dados');
       }
 
-      setMessage('Rifa criada com sucesso!');
+      setMessage('✔️ Rifa criada com sucesso! ✔️');
       setError('');
     } catch (err) {
       console.error(err);
@@ -87,8 +76,8 @@ const CreateRaffle = () => {
         onChange={(e) => setValorEntrada(e.target.value)}
       />
       <button onClick={handleCreateRaffle}>Criar Rifa</button>
-      {message && <Message>{message}</Message>}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {message && <p class = "messageSucess">{message}</p>}
+      {error && <p class = "messageError">{error}</p>}
     </div>
   );
 };

@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
+import '../App.css';
+
 
 const MintTokens = () => {
+  const [rifaId, setRifaId] = useState(''); // Estado para armazenar o ID da rifa
   const [to, setTo] = useState(''); // Estado para armazenar o endereço do destinatário
   const [amount, setAmount] = useState(''); // Estado para armazenar a quantidade de tokens
-  const [message, setMessage] = useState(''); // Estado para exibir mensagens de sucesso
-  const [error, setError] = useState(''); // Estado para exibir mensagens de erro
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleMint = async () => {
     try {
-      if (!to) throw new Error('🛑 O endereço é obrigatório 🛑'); // Verifica se o endereço foi preenchido
-      if (!amount) throw new Error('🛑 A quantidade é obrigatória 🛑'); // Verifica se a quantidade foi preenchida
-      
       if (!window.ethereum) throw new Error('MetaMask não está instalada'); // Verifica se a MetaMask está instalada
+      if (!to) throw new Error('🛑 Endereço do destinatário não informado 🛑'); // Verifica se o endereço do destinatário foi informado
+      if (!amount) throw new Error('🛑 Quantidade de tokens não informada 🛑'); // Verifica se a quantidade de tokens foi informada
   
       await window.ethereum.request({ method: 'eth_requestAccounts' }); // Solicita a conexão com a MetaMask
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
+
+      const response = await fetch(`/rifa/${rifaId}`);
+      const data = await response.json();
+
+      if (!data.address) {
+        throw new Error('❌ Endereço da rifa não encontrado ❌');
+      }
 
       // Busca as informações do contrato RealDigital
       const realDigitalResponse = await fetch('/real-digital-info');
@@ -29,7 +38,7 @@ const MintTokens = () => {
       const tx = await RealDigitalContract.mint(to, amountToMint); // Realiza a mintagem dos tokens
       await tx.wait();
   
-      setMessage('Tokens mintados com sucesso!'); // Mensagem de sucesso
+      setMessage('✔️ Tokens mintados com sucesso! ✔️'); // Mensagem de sucesso
       setError(''); // Reseta o erro
     } catch (err) {
       console.error(err);
@@ -52,11 +61,12 @@ const MintTokens = () => {
         type="number"
         placeholder="100"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)} // Atualiza a quantidade de tokens
+        onChange={(e) => setAmount(e.target.value)} 
       />
-      <button onClick={handleMint}>Mintar Tokens</button> {/* Botão para mintar tokens */}
-      {message && <p>{message}</p>} {/* Exibe mensagem de sucesso */}
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Exibe mensagem de erro */}
+      <button onClick={handleMint}>Mintar Tokens</button> 
+      {message && <p className = "messageSucess">{message}</p>}
+      {error && <p className = "messageError">{error}</p>}
+
     </div>
   );
 };

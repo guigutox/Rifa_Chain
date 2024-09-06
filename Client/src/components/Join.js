@@ -1,21 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import styled from 'styled-components';
-
-// Estilizando as mensagens
-const Message = styled.p`
-  color: green;
-  font-size: 1.2em;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 1.2em;
-  font-weight: bold;
-  background-color: #fdd;
-  padding: 10px;
-  border-radius: 5px;
-`;
+import  '../App.css';
 
 const EnterRaffle = () => {
   const [rifaId, setRifaId] = useState('');
@@ -35,21 +20,22 @@ const EnterRaffle = () => {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
   
+      
       if (!rifaId) {
         throw new Error('🛑 O ID da rifa é obrigatório 🛑');
       }
-  
+      
       if (!quantidadeRifas) {
         throw new Error('🛑 A quantidade de rifas é obrigatória 🛑');
       }
-  
+      
       const response = await fetch(`/rifa/${rifaId}`);
       const data = await response.json();
   
       if (!data.address) {
-        throw new Error('Endereço da rifa não encontrado');
+        throw new Error('❌ Endereço da rifa não encontrado ❌');
       }
-  
+
       const { address: rifaAddress, abi: rifaAbi } = data;
   
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
@@ -77,7 +63,7 @@ const EnterRaffle = () => {
         throw new Error(backendData.error || 'Erro ao atualizar a rifa');
       }
   
-      setMessage('Você entrou na rifa com sucesso!');
+      setMessage('✔️ Você entrou na rifa com sucesso! ✔️');
       setError('');
     } catch (err) {
       console.error(err);
@@ -105,8 +91,8 @@ const EnterRaffle = () => {
         onChange={(e) => setQuantidadeRifas(e.target.value)}
       />
       <button onClick={handleEnterRaffle}>Entrar na Rifa</button>
-      {message && <Message>{message}</Message>}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {message && <p class = "messageSucess">{message}</p>}
+      {error && <p class = "messageError">{error}</p>}
     </div>
   );
 };

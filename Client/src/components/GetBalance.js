@@ -1,24 +1,12 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { getBalance } from '../api/rifa';
+import '../App.css';
 
-const Message = styled.p`
-  color: green;
-  font-size: 1.2em;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 1.2em;
-  font-weight: bold;
-  background-color: #fdd;
-  padding: 10px;
-  border-radius: 5px;
-`;
 
 const GetBalance = () => {
   const [address, setAddress] = useState('');
   const [balance, setBalance] = useState('');
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleGetBalance = async () => {
@@ -27,6 +15,7 @@ const GetBalance = () => {
         throw new Error('🛑 O endereço é obrigatório 🛑');
       }
       const response = await getBalance(address);
+      
       setBalance(response.balance);
       setError('');
     } catch (err) {
@@ -46,8 +35,8 @@ const GetBalance = () => {
         onChange={(e) => setAddress(e.target.value)}
       />
       <button onClick={handleGetBalance}>Verificar Saldo</button>
-      {balance && <Message>Saldo: {balance}</Message>}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {message && <p class = "messageSucess">{message}</p>}
+      {error && <p class = "messageError">{error}</p>}
     </div>
   );
 };

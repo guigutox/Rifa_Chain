@@ -1,20 +1,7 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import styled from 'styled-components';
+import '../App.css';
 
-const Message = styled.p`
-  color: green;
-  font-size: 1.2em;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 1.2em;
-  font-weight: bold;
-  background-color: #fdd;
-  padding: 10px;
-  border-radius: 5px;
-`;
 
 const SorteioRaffle = () => {
   const [rifaId, setRifaId] = useState('');
@@ -32,7 +19,15 @@ const SorteioRaffle = () => {
       const signer = await provider.getSigner();
 
       const response = await fetch(`/rifa/${rifaId}`);
+      const data = await response.json();
+
+      if (!data.address) {
+        throw new Error('❌ Endereço da rifa não encontrado ❌');
+      }
+
       const { address: rifaAddress, abi: rifaAbi } = await response.json();
+      
+     
 
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
 
@@ -57,7 +52,7 @@ const SorteioRaffle = () => {
         throw new Error(backendData.error || 'Erro ao atualizar a rifa');
       }
   
-      setMessage('Sorteio realizado com sucesso!');
+      setMessage('✔️ Sorteio realizado com sucesso! ✔️');
       setError('');
     } catch (err) {
       console.error(err);
@@ -77,8 +72,8 @@ const SorteioRaffle = () => {
         onChange={(e) => setRifaId(e.target.value)}
       />
       <button onClick={handleSorteio}>Realizar Sorteio</button>
-      {message && <Message>{message}</Message>}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {message && <p class = "messageSucess">{message}</p>}
+      {error && <p class = "messageError">{error}</p>}
     </div>
   );
 };
