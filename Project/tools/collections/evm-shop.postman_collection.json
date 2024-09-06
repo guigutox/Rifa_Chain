@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "7ff654ed-f441-466b-a1ce-10cca739fb74",
+		"name": "EVM Shop (webinar)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13581509"
+	},
+	"item": [
+		{
+			"name": "health-check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{customer_api_url}}/health",
+					"host": [
+						"{{customer_api_url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list-products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{customer_api_url}}/products?page=1&limit=10",
+					"host": [
+						"{{customer_api_url}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "ITEM_RECEIVED",
+							"disabled": true
+						},
+						{
+							"key": "buyerAddress",
+							"value": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+							"disabled": true
+						},
+						{
+							"key": "state",
+							"value": "PURCHASE_CONFIRMED,ITEM_RECEIVED,SELLER_REFUNDED",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"pm.collectionVariables.set('auth_token',  body.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"Abcd1234#\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{admin_api_url}}/auth/login",
+					"host": [
+						"{{admin_api_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin1\",\n    \"password\": \"Abcd1234#\"\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{admin_api_url}}/auth/signup",
+					"host": [
+						"{{admin_api_url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-change-password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"oldPassword\": \"Abcd1234#\",\n    \"newPassword\": \"Abcd1234!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{admin_api_url}}/auth/change-password",
+					"host": [
+						"{{admin_api_url}}"
+					],
+					"path": [
+						"auth",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "publish-purchase",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"38 Com Munição Infinita\",\n    \"value\": \"100000000000000000000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{admin_api_url}}/purchases/publish",
+					"host": [
+						"{{admin_api_url}}"
+					],
+					"path": [
+						"purchases",
+						"publish"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "abort-purchase",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contractAddress\": \"0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{admin_api_url}}/purchases/abort",
+					"host": [
+						"{{admin_api_url}}"
+					],
+					"path": [
+						"purchases",
+						"abort"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "settle-funds",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contractAddress\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{admin_api_url}}/purchases/settle-funds",
+					"host": [
+						"{{admin_api_url}}"
+					],
+					"path": [
+						"purchases",
+						"settle-funds"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_token",
+			"value": ""
+		},
+		{
+			"key": "customer_api_url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "admin_api_url",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
