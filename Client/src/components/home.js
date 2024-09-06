@@ -5,9 +5,9 @@ import EnterRaffle from './entrar';
 import GetBalance from './GetBalance';
 import MetaMaskConnect from './MetaMaskConnect';
 import MintTokens from './MintTokens';
-import RaffleEntries from './RaffleEntries';
 import RemainingSlots from './RemainingSlots';
 import RifaList from './RifaList';
+import CreateRaffle from './criar-rifa'
 
 
 const Home = () => {
@@ -17,8 +17,6 @@ const Home = () => {
         switch (activeComponent) {
             case 'enterRaffle':
                 return <EnterRaffle />;
-            case 'raffleEntries':
-                return <RaffleEntries />;
             case 'remainingSlots':
                 return <RemainingSlots />;
             case 'chooseWinner':
@@ -31,6 +29,8 @@ const Home = () => {
                 return <ApproveRaffle />;
             case 'rifaList':
                 return <RifaList />;
+            case 'Criar rifa':
+                return <CreateRaffle/>;    
             default:
                 return <EnterRaffle />;
         }
@@ -46,9 +46,6 @@ const Home = () => {
                     <li onClick={() => setActiveComponent('enterRaffle')}>
                         Entrar na Rifa
                     </li>
-                    <li onClick={() => setActiveComponent('raffleEntries')}>
-                        Verificar Entradas
-                    </li>
                     <li onClick={() => setActiveComponent('remainingSlots')}>
                         Verificar Vagas Restantes
                     </li>
@@ -63,6 +60,9 @@ const Home = () => {
                     </li>
                     <li onClick={() => setActiveComponent('approveRaffle')}>
                         Aprovar Rifa
+                    </li>
+                    <li onClick={() => setActiveComponent('Criar rifa')}>
+                        Criar Rifa
                     </li>
 
                 </ul>

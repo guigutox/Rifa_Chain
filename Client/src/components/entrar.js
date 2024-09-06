@@ -28,41 +28,55 @@ const EnterRaffle = () => {
       if (!window.ethereum) {
         throw new Error('MetaMask não está instalada');
       }
-
+  
       // Solicitar a conexão da MetaMask
       await window.ethereum.request({ method: 'eth_requestAccounts' });
-
+  
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-
-      // Verificando se o ID da rifa está presente
+  
       if (!rifaId) {
-        throw new Error('🛑 O ID da rifa é obrigatório 🛑 ');
+        throw new Error('🛑 O ID da rifa é obrigatório 🛑');
       }
-
+  
       if (!quantidadeRifas) {
         throw new Error('🛑 A quantidade de rifas é obrigatória 🛑');
       }
-
-      // Obter os dados da rifa do backend
+  
       const response = await fetch(`/rifa/${rifaId}`);
       const data = await response.json();
-
-      // Verificar se a resposta contém o endereço da rifa
+  
       if (!data.address) {
         throw new Error('Endereço da rifa não encontrado');
       }
-
+  
       const { address: rifaAddress, abi: rifaAbi } = data;
-
-      // Criar instância do contrato
+  
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
-
-      // Interagir com o contrato
+  
       const tx = await rifaContract.entrar(quantidadeRifas);
-
+  
+      // Aguarda a confirmação da transação
       await tx.wait();
-
+  
+      // Se a transação for bem-sucedida, faça a requisição ao backend
+      const backendResponse = await fetch('/atualizaDB', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rifaId,
+          quantidadeRifas,
+        }),
+      });
+  
+      const backendData = await backendResponse.json();
+  
+      if (!backendResponse.ok) {
+        throw new Error(backendData.error || 'Erro ao atualizar a rifa');
+      }
+  
       setMessage('Você entrou na rifa com sucesso!');
       setError('');
     } catch (err) {
@@ -71,6 +85,7 @@ const EnterRaffle = () => {
       setMessage('');
     }
   };
+  
 
   return (
     <div>

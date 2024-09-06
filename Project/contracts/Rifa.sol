@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./RealDigital.sol";  // Importa o contrato MyToken específico
+import "./RealDigital.sol";  
 
 contract Rifa {
     address public manager;
@@ -10,11 +10,13 @@ contract Rifa {
     bool public sorteado;
     address public vencedor;
 
-    uint256 public maxEntradas;  // quantidade maxima de entradas
-    uint256 public restEntradas; // Entradas restantes
-    uint256 public valorEntrada; // Preço de cada entrada
+    uint256 public maxEntradas;  
+    uint256 public restEntradas; 
+    uint256 public valorEntrada; 
 
-    RealDigital public token; // dizendo qual token erc20 vamos usar
+    RealDigital public token; 
+
+
 
     constructor(RealDigital _token, uint256 _maxEntradas, uint256 _valorEntrada) {
         manager = msg.sender;
@@ -43,7 +45,6 @@ contract Rifa {
     function entrar(uint256 quantidadeRifas) public notSorteado entradasDisponiveis {
         require(quantidadeRifas > 0, "Quantidade de rifas deve ser maior que zero");
 
-
         uint256 totalCusto = quantidadeRifas * valorEntrada;
         require(token.balanceOf(msg.sender) >= totalCusto, "Saldo insuficiente para entrar na rifa");
 
@@ -60,24 +61,29 @@ contract Rifa {
             entradasCount++;
         }
         restEntradas -= quantidadeRifas;
-        
 
-        // nao da pra criar uma funcao separada para sortear automaticamente, para fazer isso teriamos que adicionar o modifier onlyManager, o que impediria que algum endereço que nao seja o owner compre a ultima ficha dessa rifa
-        if(restEntradas == 0){
-        uint256 index = random() % entradasCount;
-        vencedor = entradas[index];
-
-
-        require(token.transfer(vencedor, (token.balanceOf(address(this)))), "Transferencia do premio falhou");
-
-        sorteado = true;
-
+        if (restEntradas == 0) {
+            rifaCompleta();
         }
-
     }
 
     function random() private view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, entradasCount)));
+    }
+
+    //Funcao criada para sortear automaticamente assim que todos os tickets forem comprados, pois, nesse cenario, não há motivo em manter a rifa operando.
+    //Foi criada uma funcao a parte de escolherVencedor(), pois, o intuito desta é permitir que apenas o criador da rifa possa chama-la quando desejar
+    function rifaCompleta() private  {
+
+        require(entradasCount > 0, "Nenhuma entrada na rifa");
+        require(!sorteado, "Sorteio ja realizado");
+
+        uint256 index = random() % entradasCount;
+        vencedor = entradas[index];
+
+        require(token.transfer(vencedor, (token.balanceOf(address(this)))), "Transferencia do premio falhou");
+
+        sorteado = true;
     }
 
     function escolherVencedor() public onlyManager {
@@ -86,7 +92,6 @@ contract Rifa {
 
         uint256 index = random() % entradasCount;
         vencedor = entradas[index];
-
 
         require(token.transfer(vencedor, (token.balanceOf(address(this)))), "Transferencia do premio falhou");
 
@@ -104,9 +109,11 @@ contract Rifa {
     function getSorteado() public view returns (bool) {
         return sorteado;
     }
+
     function TokensAcumulados() public view returns (uint256) {
         return token.balanceOf(address(this));
     }
+
     function vagasRestantes() public view returns (uint256) {
         return restEntradas;
     }

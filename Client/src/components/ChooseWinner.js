@@ -36,9 +36,27 @@ const SorteioRaffle = () => {
 
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
 
-      const tx = await rifaContract.sorteio();
+      // Interagir com o contrato chamando a função `sorteio`
+      const tx = await rifaContract.escolherVencedor();
       await tx.wait();
 
+      // Se a transação for bem-sucedida, faça a requisição ao backend
+      const backendResponse = await fetch('/sorteio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rifaId
+        }),
+      });
+  
+      const backendData = await backendResponse.json();
+  
+      if (!backendResponse.ok) {
+        throw new Error(backendData.error || 'Erro ao atualizar a rifa');
+      }
+  
       setMessage('Sorteio realizado com sucesso!');
       setError('');
     } catch (err) {
