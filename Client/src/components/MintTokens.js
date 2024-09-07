@@ -12,20 +12,13 @@ const MintTokens = () => {
 
   const handleMint = async () => {
     try {
-      if (!window.ethereum) throw new Error('MetaMask não está instalada'); // Verifica se a MetaMask está instalada
+      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊'); // Verifica se a MetaMask está instalada
       if (!to) throw new Error('🛑 Endereço do destinatário não informado 🛑'); // Verifica se o endereço do destinatário foi informado
       if (!amount) throw new Error('🛑 Quantidade de tokens não informada 🛑'); // Verifica se a quantidade de tokens foi informada
   
       await window.ethereum.request({ method: 'eth_requestAccounts' }); // Solicita a conexão com a MetaMask
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-
-      const response = await fetch(`/rifa/${rifaId}`);
-      const data = await response.json();
-
-      if (!data.address) {
-        throw new Error('❌ Endereço da rifa não encontrado ❌');
-      }
 
       // Busca as informações do contrato RealDigital
       const realDigitalResponse = await fetch('/real-digital-info');
@@ -38,11 +31,11 @@ const MintTokens = () => {
       const tx = await RealDigitalContract.mint(to, amountToMint); // Realiza a mintagem dos tokens
       await tx.wait();
   
-      setMessage('✔️ Tokens mintados com sucesso! ✔️'); // Mensagem de sucesso
-      setError(''); // Reseta o erro
+      setMessage('✔️ Tokens mintados com sucesso! ✔️'); 
+      setError(''); 
     } catch (err) {
       console.error(err);
-      setError(err.message); // Exibe o erro
+      setError(err.message); 
     }
   };
 

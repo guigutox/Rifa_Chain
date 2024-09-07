@@ -41,9 +41,12 @@ const EnterRaffle = () => {
       const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
   
       const tx = await rifaContract.entrar(quantidadeRifas);
+      
   
       // Aguarda a confirmação da transação
       await tx.wait();
+
+      console.log(tx);
   
       // Se a transação for bem-sucedida, faça a requisição ao backend
       const backendResponse = await fetch('/atualizaDB', {

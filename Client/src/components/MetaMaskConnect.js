@@ -10,10 +10,10 @@ function MetaMaskConnect() {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setWalletAddress(accounts[0]); // Armazena o endereço da carteira conectada
       } catch (error) {
-        console.error('Erro ao conectar com MetaMask:', error);
+        console.error('🦊 Erro ao conectar com MetaMask:', error);
       }
     } else {
-      alert('MetaMask não detectada. Por favor, instale a extensão.');
+      alert('🦊 MetaMask não detectada. Por favor, instale a extensão.');
     }
   };
 

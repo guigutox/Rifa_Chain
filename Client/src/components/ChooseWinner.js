@@ -10,7 +10,7 @@ const SorteioRaffle = () => {
 
   const handleSorteio = async () => {
     try {
-      if (!window.ethereum) throw new Error('MetaMask não está instalada');
+      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
       if (!rifaId) throw new Error('🛑O ID da rifa é obrigatório🛑');
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -19,10 +19,9 @@ const SorteioRaffle = () => {
       const signer = await provider.getSigner();
 
       const response = await fetch(`/rifa/${rifaId}`);
-      const data = await response.json();
 
-      if (!data.address) {
-        throw new Error('❌ Endereço da rifa não encontrado ❌');
+      if (!response.ok) {
+        throw new Error('❌ Rifa não encontrada ❌');
       }
 
       const { address: rifaAddress, abi: rifaAbi } = await response.json();

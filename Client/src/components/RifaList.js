@@ -9,7 +9,7 @@ const RifaList = () => {
     const fetchRifas = async () => {
       try {
         const response = await axios.get('http://localhost:3000/rifas'); // Endpoint do backend
-        if (!response.data || response.data.length === 0) throw new Error('Nenhuma rifa disponível no momento.');
+        if (!response.data || response.data.length === 0) throw new Error('Nenhuma rifa disponível no momento.'); // TRATARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
         setRifas(response.data);
         setError(''); // Reseta o erro ao obter os dados com sucesso
       } catch (error) {

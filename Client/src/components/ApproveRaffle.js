@@ -11,7 +11,7 @@ const ApproveRaffle = () => {
 
   const handleApprove = async () => {
     try {
-      if (!window.ethereum) throw new Error('MetaMask não está instalada');
+      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
 
       if (!rifaId) throw new Error('🛑 O ID da rifa é obrigatório 🛑');
       if (!amount) throw new Error('🛑 A quantidade é obrigatória 🛑');

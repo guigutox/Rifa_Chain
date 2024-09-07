@@ -10,7 +10,7 @@ const CreateRaffle = () => {
 
   const handleCreateRaffle = async () => {
     try {
-      if (!window.ethereum) throw new Error('MetaMask não está instalada');
+      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
       if (!maxEntradas) throw new Error('🛑 Máximo de entradas não informado 🛑');
       if (!valorEntrada) throw new Error('🛑 Valor por entrada não informado 🛑');
 
