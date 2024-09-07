@@ -110,11 +110,5 @@ contract Rifa {
         return sorteado;
     }
 
-    function TokensAcumulados() public view returns (uint256) {
-        return token.balanceOf(address(this));
-    }
 
-    function vagasRestantes() public view returns (uint256) {
-        return restEntradas;
-    }
 }
