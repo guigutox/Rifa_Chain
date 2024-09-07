@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import '../App.css';
+import realDigitalJson from './contracts/RealDigital.json';
+import { CONTRACT_ADDRESSES } from './config';
 
 
 const MintTokens = () => {
-  const [rifaId, setRifaId] = useState(''); // Estado para armazenar o ID da rifa
-  const [to, setTo] = useState(''); // Estado para armazenar o endereço do destinatário
-  const [amount, setAmount] = useState(''); // Estado para armazenar a quantidade de tokens
+  const [to, setTo] = useState(''); 
+  const [amount, setAmount] = useState(''); 
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -20,12 +21,7 @@ const MintTokens = () => {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      // Busca as informações do contrato RealDigital
-      const realDigitalResponse = await fetch('/real-digital-info');
-      const { address: realDigitalAddress, abi: realDigitalAbi } = await realDigitalResponse.json();
-
-      // Instancia o contrato RealDigital
-      const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, signer);
+      const RealDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi, signer);
   
       const amountToMint = ethers.parseUnits(amount, 18); // Converte a quantidade para 18 decimais
       const tx = await RealDigitalContract.mint(to, amountToMint); // Realiza a mintagem dos tokens

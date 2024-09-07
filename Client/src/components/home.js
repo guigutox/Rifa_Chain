@@ -4,7 +4,6 @@ import ChooseWinner from './ChooseWinner';
 import EnterRaffle from './Join';
 import GetBalance from './GetBalance';
 import MintTokens from './MintTokens';
-import RemainingSlots from './RemainingSlots';
 import RifaList from './RifaList';
 import CreateRaffle from './CreateRaffle'
 import Particle from './Particle.js';
@@ -18,8 +17,6 @@ const Home = () => {
         switch (activeComponent) {
             case 'enterRaffle':
                 return <EnterRaffle />;
-            case 'remainingSlots':
-                return <RemainingSlots />;
             case 'chooseWinner':
                 return <ChooseWinner />;
             case 'getBalance':
@@ -48,9 +45,6 @@ const Home = () => {
                     </li>
                     <li onClick={() => setActiveComponent('enterRaffle')}>
                         Entrar na Rifa
-                    </li>
-                    <li onClick={() => setActiveComponent('remainingSlots')}>
-                        Verificar Vagas Restantes
                     </li>
                     <li onClick={() => setActiveComponent('chooseWinner')}>
                         Realizar Sorteio

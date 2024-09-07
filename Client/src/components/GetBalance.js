@@ -1,25 +1,41 @@
 import React, { useState } from 'react';
-import { getBalance } from '../api/rifa';
 import '../App.css';
-
+import { ethers } from 'ethers';  
+import { CONTRACT_ADDRESSES } from './config';
+import realDigitalJson from './contracts/RealDigital.json';
 
 const GetBalance = () => {
   const [address, setAddress] = useState('');
   const [balance, setBalance] = useState('');
-  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleGetBalance = async () => {
     try {
+      if (!window.ethereum) {
+        throw new Error('MetaMask não está instalada');
+      }
+      
       if (!address) {
         throw new Error('🛑 O endereço é obrigatório 🛑');
       }
-      const response = await getBalance(address);
-      
-      setBalance(response.balance);
+
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+
+      const realDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi,signer);
+
+      const balance = await realDigitalContract.balanceOf(address);
+
+      const formattedBalance = ethers.formatUnits(balance, 18);
+
+      setBalance(formattedBalance);
       setError('');
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError("Ocorreu um erro ao tentar obter o saldo de tokens. Verifique se voce esta passando o endereço correto.");
       setBalance('');
     }
   };
@@ -35,8 +51,8 @@ const GetBalance = () => {
         onChange={(e) => setAddress(e.target.value)}
       />
       <button onClick={handleGetBalance}>Verificar Saldo</button>
-      {message && <p class = "messageSucess">{message}</p>}
-      {error && <p class = "messageError">{error}</p>}
+      {balance && <p className="messageSucess">Saldo: {balance} tokens</p>}
+      {error && <p className="messageError">{error}</p>}
     </div>
   );
 };

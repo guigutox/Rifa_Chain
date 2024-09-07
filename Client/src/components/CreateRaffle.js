@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import '../App.css';
+import rifaJson from './contracts/Rifa.json';
+import { CONTRACT_ADDRESSES } from './config';
 
 const CreateRaffle = () => {
   const [maxEntradas, setMaxEntradas] = useState('');
@@ -20,14 +22,8 @@ const CreateRaffle = () => {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      const realDigitalResponse = await fetch('/real-digital-info');
-      const { address: realDigitalAddress} = await realDigitalResponse.json();
-
-      const rifaAbiResponse = await fetch('/rifa-abi-bytecode');
-      const { abi: rifaAbi, bytecode: rifaBytecode } = await rifaAbiResponse.json();
-
-      const RifaFactory = new ethers.ContractFactory(rifaAbi, rifaBytecode, signer);
-      const rifa = await RifaFactory.deploy(realDigitalAddress, maxEntradas, ethers.parseUnits(valorEntrada, 18));
+      const RifaFactory = new ethers.ContractFactory(rifaJson.abi, rifaJson.bytecode, signer);
+      const rifa = await RifaFactory.deploy(CONTRACT_ADDRESSES.REAL_DIGITAL, maxEntradas, ethers.parseUnits(valorEntrada, 18));
       await rifa.waitForDeployment();
 
       const rifaAddress = await rifa.getAddress();

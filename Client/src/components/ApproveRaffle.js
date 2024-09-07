@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import realDigitalJson from './contracts/RealDigital.json';
+import { CONTRACT_ADDRESSES } from './config';
 import { ethers } from 'ethers';
 import '../App.css';
 
@@ -32,10 +34,8 @@ const ApproveRaffle = () => {
       const rifaResponse = await fetch(`/rifa/${rifaId}`);
       const { address: rifaAddress } = await rifaResponse.json();
 
-      const realDigitalResponse = await fetch('/real-digital-info');
-      const { address: realDigitalAddress, abi: realDigitalAbi } = await realDigitalResponse.json();
 
-      const RealDigitalContract = new ethers.Contract(realDigitalAddress, realDigitalAbi, signer);
+      const RealDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi, signer);
       const amountToApprove = ethers.parseUnits(amount, 18);
 
       const tx = await RealDigitalContract.approve(rifaAddress, amountToApprove);

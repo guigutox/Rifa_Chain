@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import rifaJson from './contracts/Rifa.json';
 import { ethers } from 'ethers';
 import '../App.css';
 
@@ -24,17 +25,15 @@ const SorteioRaffle = () => {
         throw new Error('❌ Rifa não encontrada ❌');
       }
 
-      const { address: rifaAddress, abi: rifaAbi } = await response.json();
+      const { address: rifaAddress} = await response.json();
       
      
 
-      const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
+      const rifaContract = new ethers.Contract(rifaAddress, rifaJson.abi, signer);
 
-      // Interagir com o contrato chamando a função `sorteio`
       const tx = await rifaContract.escolherVencedor();
       await tx.wait();
 
-      // Se a transação for bem-sucedida, faça a requisição ao backend
       const backendResponse = await fetch('/sorteio', {
         method: 'POST',
         headers: {

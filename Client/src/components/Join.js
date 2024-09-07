@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
+import rifaJson from './contracts/Rifa.json';
 import  '../App.css';
 
 const EnterRaffle = () => {
@@ -36,19 +37,16 @@ const EnterRaffle = () => {
         throw new Error('❌ Endereço da rifa não encontrado ❌');
       }
 
-      const { address: rifaAddress, abi: rifaAbi } = data;
+      const { address: rifaAddress} = data;
   
-      const rifaContract = new ethers.Contract(rifaAddress, rifaAbi, signer);
+      const rifaContract = new ethers.Contract(rifaAddress, rifaJson.abi, signer);
   
       const tx = await rifaContract.entrar(quantidadeRifas);
-      
-  
-      // Aguarda a confirmação da transação
       await tx.wait();
 
       console.log(tx);
   
-      // Se a transação for bem-sucedida, faça a requisição ao backend
+      
       const backendResponse = await fetch('/atualizaDB', {
         method: 'POST',
         headers: {
