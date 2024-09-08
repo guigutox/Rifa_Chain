@@ -43,6 +43,12 @@ const Home = () => {
                     <li onClick={() => setActiveComponent('rifaList')}>
                         Listar Rifas
                     </li>
+                    <li onClick={() => setActiveComponent('Criar rifa')}>
+                        Criar Rifa
+                    </li>
+                    <li onClick={() => setActiveComponent('approveRaffle')}>
+                        Aprovar Rifa
+                    </li>
                     <li onClick={() => setActiveComponent('enterRaffle')}>
                         Entrar na Rifa
                     </li>
@@ -54,12 +60,6 @@ const Home = () => {
                     </li>
                     <li onClick={() => setActiveComponent('mintTokens')}>
                         Mintar Novos Tokens
-                    </li>
-                    <li onClick={() => setActiveComponent('approveRaffle')}>
-                        Aprovar Rifa
-                    </li>
-                    <li onClick={() => setActiveComponent('Criar rifa')}>
-                        Criar Rifa
                     </li>
 
                 </ul>
