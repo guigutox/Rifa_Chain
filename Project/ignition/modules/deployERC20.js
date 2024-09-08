@@ -10,6 +10,7 @@ async function main() {
     const realDigitalAddress = await realDigital.getAddress();  // graças ao await ali, é garantia que o contrato ja vai ter feito o deploy e com o endereço em maos
   
     console.log("RealDigital implementado no endereço:", realDigitalAddress);
+    
 
   }
   
