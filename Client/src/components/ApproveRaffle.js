@@ -68,8 +68,8 @@ const ApproveRaffle = () => {
         onChange={(e) => setAmount(e.target.value)}
       />
       <button onClick={handleApprove}>Aprovar</button>
-      {message && <p class = "messageSucess">{message}</p>}
-      {error && <p class = "messageError">{error}</p>}
+      {message && <p className = "messageSucess">{message}</p>}
+      {error && <p className = "messageError">{error}</p>}
     </div>
   );
 };

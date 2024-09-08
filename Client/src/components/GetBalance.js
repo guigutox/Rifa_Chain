@@ -35,7 +35,7 @@ const GetBalance = () => {
       setError('');
     } catch (err) {
       console.error(err);
-      setError("Ocorreu um erro ao tentar obter o saldo de tokens. Verifique se voce esta passando o endereço correto.");
+      setError("❌ Endereco não encontrado ❌");
       setBalance('');
     }
   };
