@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const RifaList = () => {
   const [rifas, setRifas] = useState([]);
-  const [error, setError] = useState(''); // Adiciona estado para o erro
+  const [error, setError] = useState(''); 
 
   useEffect(() => {
     const fetchRifas = async () => {
@@ -11,10 +11,10 @@ const RifaList = () => {
         const response = await axios.get('http://localhost:3000/rifas'); 
         if (!response.data || response.data.length === 0) throw new Error('❌ Nenhuma rifa disponível no momento. ❌ '); 
         setRifas(response.data);
-        setError(''); // Reseta o erro ao obter os dados com sucesso
+        setError(''); 
       } catch (error) {
         setError((error.message || ''));
-        setRifas([]); // Reseta a lista de rifas em caso de erro
+        setRifas([]); 
       }
     };
 

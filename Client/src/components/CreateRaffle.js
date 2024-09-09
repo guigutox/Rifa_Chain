@@ -12,26 +12,22 @@ const CreateRaffle = () => {
 
   const handleCreateRaffle = async () => {
     try {
-      // Limpa mensagens anteriores
       setMessage('');
       setError('');
 
-      // Validações de campos vazios
       if (!maxEntradas) {
         setError('🛑 Máximo de entradas não informado 🛑');
-        return; // Impede a execução do resto do código
+        return; 
       }
       if (!valorEntrada) {
         setError('🛑 Valor por entrada não informado 🛑');
-        return; // Impede a execução do resto do código
+        return; 
       }
 
-      // Validação da presença do MetaMask
       if (!window.ethereum) {
         throw new Error('🦊 MetaMask não está instalada 🦊');
       }
 
-      // Solicita a conexão à conta MetaMask
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
       // Configura o provedor e o signer
@@ -65,7 +61,6 @@ const CreateRaffle = () => {
       setMessage('✔️ Rifa criada com sucesso! ✔️');
     } catch (err) {
       console.error(err);
-      // Define a mensagem de erro
       setError("🗑️ Limpe o cache do seu metamask 🗑️");
     }
   };

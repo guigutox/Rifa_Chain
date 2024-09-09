@@ -56,7 +56,7 @@ const MintTokens = () => {
         type="text"
         placeholder="0x1234567890123456789012345678901234567890"
         value={to}
-        onChange={(e) => setTo(e.target.value)} // Atualiza o endereço do destinatário
+        onChange={(e) => setTo(e.target.value)} 
       />
       <label>Quantidade</label>
       <input
