@@ -8,7 +8,7 @@ const RifaList = () => {
   useEffect(() => {
     const fetchRifas = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/rifas'); 
+        const response = await axios.get('/rifas'); 
         if (!response.data || response.data.length === 0) throw new Error('❌ Nenhuma rifa disponível no momento. ❌ '); 
         setRifas(response.data);
         setError(''); 
@@ -24,7 +24,7 @@ const RifaList = () => {
   return (
     <div>
       <h2>Lista de Rifas</h2>
-      {error && <p className = "messageError">{error}</p>} 
+      {error && <p className="messageError">{error}</p>} 
       {rifas.length === 0 && !error ? (
         <p>Nenhuma rifa disponível</p>
       ) : (
