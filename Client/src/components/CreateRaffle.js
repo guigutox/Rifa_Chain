@@ -10,39 +10,27 @@ const CreateRaffle = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  const fetchURL = 'https://k2u52s2tc6.execute-api.us-east-1.amazonaws.com/dev'; // URL base
+  
   const handleCreateRaffle = async () => {
     try {
-      setMessage('');
-      setError('');
-
-      if (!maxEntradas) {
-        setError('🛑 Máximo de entradas não informado 🛑');
-        return; 
-      }
-      if (!valorEntrada) {
-        setError('🛑 Valor por entrada não informado 🛑');
-        return; 
-      }
-
-      if (!window.ethereum) {
-        throw new Error('🦊 MetaMask não está instalada 🦊');
-      }
-
+      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
+      if (!maxEntradas) throw new Error('🛑 Máximo de entradas não informado 🛑');
+      if (!valorEntrada) throw new Error('🛑 Valor por entrada não informado 🛑');
+  
       await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-      // Configura o provedor e o signer
+  
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-
-      // Cria o contrato da rifa
+  
       const RifaFactory = new ethers.ContractFactory(rifaJson.abi, rifaJson.bytecode, signer);
       const rifa = await RifaFactory.deploy(CONTRACT_ADDRESSES.REAL_DIGITAL, maxEntradas, ethers.parseUnits(valorEntrada, 18));
       await rifa.waitForDeployment();
-
+  
       const rifaAddress = await rifa.getAddress();
-
-      // Enviar os dados da nova rifa para o backend
-      const response = await fetch('/criar-rifa', {
+  
+      // Enviar os dados da nova rifa para o backend para salvar no banco de dados
+      const response = await fetch(`${fetchURL}/criar-rifa`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,17 +41,22 @@ const CreateRaffle = () => {
           valorEntrada,
         }),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Erro ao salvar a rifa no banco de dados');
+        const errorResponse = await response.text();
+        console.error('Erro ao salvar a rifa no banco de dados:', errorResponse);
+        throw new Error(`Erro ao salvar a rifa no banco de dados: ${errorResponse}`);
       }
-
+  
       setMessage('✔️ Rifa criada com sucesso! ✔️');
+      setError('');
     } catch (err) {
-      console.error(err);
-      setError("🗑️ Limpe o cache do seu metamask 🗑️");
+      console.error('Erro:', err);
+      setError(err.message || 'Erro desconhecido');
+      setMessage('');
     }
   };
+  
 
   return (
     <div>
@@ -83,8 +76,8 @@ const CreateRaffle = () => {
         onChange={(e) => setValorEntrada(e.target.value)}
       />
       <button onClick={handleCreateRaffle}>Criar Rifa</button>
-      {message && <p class="messageSucess">{message}</p>}
-      {error && <p class="messageError">{error}</p>}
+      {message && <p className="messageSucess">{message}</p>}
+      {error && <p className="messageError">{error}</p>}
     </div>
   );
 };

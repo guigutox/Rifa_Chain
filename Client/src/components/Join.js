@@ -8,6 +8,7 @@ const EnterRaffle = () => {
   const [quantidadeRifas, setQuantidadeRifas] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const fetchURL = 'https://k2u52s2tc6.execute-api.us-east-1.amazonaws.com/dev';
 
   const handleEnterRaffle = async () => {
     try {
@@ -41,7 +42,7 @@ const EnterRaffle = () => {
 
       console.log(tx);
 
-      const backendResponse = await fetch('/atualizaDB', {
+      const backendResponse = await fetch(`${fetchURL}/atualizaDB`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
