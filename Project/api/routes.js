@@ -35,18 +35,20 @@ router.post('/criar-rifa', async (req, res) => {
 //Rota para atualizar o banco de dados conforme mais pessoas entram na rifa
 router.post('/atualizaDB', async (req, res) => {
     try {
-        const { rifaId, quantidadeRifas } = req.body;
+        const { rifaAddress, quantidadeRifas } = req.body;
 
-        const rifaData = await rifaRepository.findById(rifaId);
+        // Busca a rifa pelo campo "address"
+        const rifaData = await rifaRepository.findOne({ address: rifaAddress });
         if (!rifaData) {
             return res.status(404).send({ error: 'Rifa não encontrada' });
         }
 
         const novasEntradasRestantes = rifaData.entradasRestantes - quantidadeRifas;
         rifaData.tokensAcumulados += (quantidadeRifas * rifaData.valorEntrada);
-        if(novasEntradasRestantes <= 0){
+        if (novasEntradasRestantes <= 0) {
             rifaData.sorteioRealizado = true;
             rifaData.tokensAcumulados = 0;
+            novasEntradasRestantes = 0;
         }
         rifaData.entradasRestantes = novasEntradasRestantes;
         await rifaData.save();
@@ -62,9 +64,9 @@ router.post('/atualizaDB', async (req, res) => {
 // atualiza o db caso alguem seja sorteado
 router.post('/sorteio', async (req, res) => {
     try {
-        const { rifaId } = req.body;
+        const { rifaAddress } = req.body;
 
-        const rifa = await rifaRepository.findById(rifaId);
+        const rifa = await rifaRepository.findOne({ address: rifaAddress });
         if (!rifa) {
             return res.status(404).send({ error: 'Rifa não encontrada' });
         }
@@ -81,31 +83,11 @@ router.post('/sorteio', async (req, res) => {
 });
 
 
-// Nova rota para buscar informações do contrato
-router.get('/rifa/:rifaId', async (req, res) => {
-    try {
-        const { rifaId } = req.params;
-
-
-        const rifaData = await rifaRepository.findById(rifaId);
-        if (!rifaData) {
-            return res.status(404).send({ error: 'Rifa não encontrada' });
-        }
-
-
-        res.json({
-            address: rifaData.address,
-            abi: rifaAbi
-        });
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao obter informações da rifa' });
-    }
-});
 
 
 router.get('/rifas', async (req, res) => {
     try {
-        const rifas = await rifaRepository.find(); // Buscando todas as rifas
+        const rifas = await rifaRepository.find(); 
         res.json(rifas);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar rifas' });

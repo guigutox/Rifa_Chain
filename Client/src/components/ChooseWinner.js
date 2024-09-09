@@ -5,29 +5,19 @@ import '../App.css';
 
 
 const SorteioRaffle = () => {
-  const [rifaId, setRifaId] = useState('');
+  const [rifaAddress, setrifaAddress] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleSorteio = async () => {
     try {
       if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
-      if (!rifaId) throw new Error('🛑O ID da rifa é obrigatório🛑');
+      if (!rifaAddress) throw new Error('🛑O ID da rifa é obrigatório🛑');
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-
-      const response = await fetch(`/rifa/${rifaId}`);
-
-      if (!response.ok) {
-        throw new Error('❌ Rifa não encontrada ❌');
-      }
-
-      const { address: rifaAddress} = await response.json();
-      
-     
 
       const rifaContract = new ethers.Contract(rifaAddress, rifaJson.abi, signer);
 
@@ -40,7 +30,7 @@ const SorteioRaffle = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          rifaId
+          rifaAddress
         }),
       });
   
@@ -62,12 +52,12 @@ const SorteioRaffle = () => {
   return (
     <div>
       <h2>Realizar Sorteio</h2>
-      <label>ID da Rifa</label>
+      <label>Endereço da Rifa</label>
       <input
         type="text"
         placeholder="0x1234567890123456789012345678901234567890"
-        value={rifaId}
-        onChange={(e) => setRifaId(e.target.value)}
+        value={rifaAddress}
+        onChange={(e) => setrifaAddress(e.target.value)}
       />
       <button onClick={handleSorteio}>Realizar Sorteio</button>
       {message && <p class = "messageSucess">{message}</p>}

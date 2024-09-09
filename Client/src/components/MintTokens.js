@@ -13,18 +13,18 @@ const MintTokens = () => {
 
   const handleMint = async () => {
     try {
-      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊'); // Verifica se a MetaMask está instalada
-      if (!to) throw new Error('🛑 Endereço do destinatário não informado 🛑'); // Verifica se o endereço do destinatário foi informado
-      if (!amount) throw new Error('🛑 Quantidade de tokens não informada 🛑'); // Verifica se a quantidade de tokens foi informada
+      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊'); 
+      if (!to) throw new Error('🛑 Endereço do destinatário não informado 🛑'); 
+      if (!amount) throw new Error('🛑 Quantidade de tokens não informada 🛑'); 
   
-      await window.ethereum.request({ method: 'eth_requestAccounts' }); // Solicita a conexão com a MetaMask
+      await window.ethereum.request({ method: 'eth_requestAccounts' }); 
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
       const RealDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi, signer);
   
-      const amountToMint = ethers.parseUnits(amount, 18); // Converte a quantidade para 18 decimais
-      const tx = await RealDigitalContract.mint(to, amountToMint); // Realiza a mintagem dos tokens
+      const amountToMint = ethers.parseUnits(amount, 18); 
+      const tx = await RealDigitalContract.mint(to, amountToMint); 
       await tx.wait();
   
       setMessage('✔️ Tokens mintados com sucesso! ✔️'); 

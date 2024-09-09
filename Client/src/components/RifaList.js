@@ -8,7 +8,7 @@ const RifaList = () => {
   useEffect(() => {
     const fetchRifas = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/rifas'); // Endpoint do backend
+        const response = await axios.get('http://localhost:3000/rifas'); 
         if (!response.data || response.data.length === 0) throw new Error('❌ Nenhuma rifa disponível no momento. ❌ '); 
         setRifas(response.data);
         setError(''); // Reseta o erro ao obter os dados com sucesso
@@ -31,8 +31,8 @@ const RifaList = () => {
         <div className='RifaConteiner'>
           {rifas.map((rifa) => (
             <ul key={rifa._id} className='ListaRifa'>
-              <li>Endereço: {rifa.address}</li>
-              <li>Id da rifa: {rifa._id}</li>
+              <li>Endereço: 
+                 {rifa.address}</li>
               <li>Valor da Entrada: {rifa.valorEntrada}</li>
               <li>Entradas Restantes: {rifa.entradasRestantes}</li>
               <li>Sorteio Realizado: {rifa.sorteioRealizado ? 'Sim' : 'Não'}</li>
