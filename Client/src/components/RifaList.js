@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const RifaList = () => {
   const [rifas, setRifas] = useState([]);
-  const [error, setError] = useState(''); 
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchRifas = async () => {
       try {
-        const response = await axios.get('/rifas'); 
-        if (!response.data || response.data.length === 0) throw new Error('❌ Nenhuma rifa disponível no momento. ❌ '); 
-        setRifas(response.data);
-        setError(''); 
-      } catch (error) {
-        setError((error.message || ''));
-        setRifas([]); 
+        const response = await fetch('/rifas');
+        if (!response.ok) {
+          throw new Error('Erro ao buscar rifas');
+        }
+
+        const data = await response.json();
+        if (!data || data.length === 0) {
+          throw new Error('❌ Nenhuma rifa disponível no momento. ❌');
+        }
+
+        setRifas(data);
+        setError('');
+      } catch (err) {
+        setError(err.message || 'Erro desconhecido');
+        setRifas([]);
       }
     };
 
@@ -24,14 +31,14 @@ const RifaList = () => {
   return (
     <div>
       <h2>Lista de Rifas</h2>
-      {error && <p className="messageError">{error}</p>} 
+      {error && <p className="messageError">{error}</p>}
       {rifas.length === 0 && !error ? (
         <p>Nenhuma rifa disponível</p>
       ) : (
-        <div className='RifaConteiner'>
+        <div className="RifaConteiner">
           {rifas.map((rifa) => (
-            <ul key={rifa._id} className='ListaRifa'>
-              <li>Endereço: 
+            <ul key={rifa._id} className="ListaRifa">
+              <li>Endereço:
                  {rifa.address}</li>
               <li>Valor da Entrada: {rifa.valorEntrada}</li>
               <li>Entradas Restantes: {rifa.entradasRestantes}</li>
