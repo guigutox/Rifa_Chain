@@ -12,23 +12,40 @@ const CreateRaffle = () => {
 
   const handleCreateRaffle = async () => {
     try {
-      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
-      if (!maxEntradas) throw new Error('🛑 Máximo de entradas não informado 🛑');
-      if (!valorEntrada) throw new Error('🛑 Valor por entrada não informado 🛑');
+      // Limpa mensagens anteriores
+      setMessage('');
+      setError('');
 
+      // Validações de campos vazios
+      if (!maxEntradas) {
+        setError('🛑 Máximo de entradas não informado 🛑');
+        return; // Impede a execução do resto do código
+      }
+      if (!valorEntrada) {
+        setError('🛑 Valor por entrada não informado 🛑');
+        return; // Impede a execução do resto do código
+      }
 
+      // Validação da presença do MetaMask
+      if (!window.ethereum) {
+        throw new Error('🦊 MetaMask não está instalada 🦊');
+      }
+
+      // Solicita a conexão à conta MetaMask
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
+      // Configura o provedor e o signer
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
+      // Cria o contrato da rifa
       const RifaFactory = new ethers.ContractFactory(rifaJson.abi, rifaJson.bytecode, signer);
       const rifa = await RifaFactory.deploy(CONTRACT_ADDRESSES.REAL_DIGITAL, maxEntradas, ethers.parseUnits(valorEntrada, 18));
       await rifa.waitForDeployment();
 
       const rifaAddress = await rifa.getAddress();
 
-      // Enviar os dados da nova rifa para o backend para salvar no banco de dados
+      // Enviar os dados da nova rifa para o backend
       const response = await fetch('/criar-rifa', {
         method: 'POST',
         headers: {
@@ -46,11 +63,10 @@ const CreateRaffle = () => {
       }
 
       setMessage('✔️ Rifa criada com sucesso! ✔️');
-      setError('');
     } catch (err) {
       console.error(err);
-      setError(err.message);
-      setMessage('');
+      // Define a mensagem de erro
+      setError("🗑️ Limpe o cache do seu metamask 🗑️");
     }
   };
 
@@ -72,8 +88,8 @@ const CreateRaffle = () => {
         onChange={(e) => setValorEntrada(e.target.value)}
       />
       <button onClick={handleCreateRaffle}>Criar Rifa</button>
-      {message && <p class = "messageSucess">{message}</p>}
-      {error && <p class = "messageError">{error}</p>}
+      {message && <p class="messageSucess">{message}</p>}
+      {error && <p class="messageError">{error}</p>}
     </div>
   );
 };

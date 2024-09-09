@@ -13,10 +13,22 @@ const ApproveRaffle = () => {
 
   const handleApprove = async () => {
     try {
-      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
+      setMessage('');
+      setError('');
 
-      if (!rifaAddress) throw new Error('🛑 O ID da rifa é obrigatório 🛑');
-      if (!amount) throw new Error('🛑 A quantidade é obrigatória 🛑');
+      if (!window.ethereum) {
+        throw new Error('🦊 MetaMask não está instalada 🦊');
+      }
+
+      if (!rifaAddress) {
+        setError('🛑 Endereço da rifa não informado 🛑');
+        return;
+      }
+
+      if (!amount) {
+        setError('🛑 Quantidade de tokens não informada 🛑');
+        return;
+      }
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -34,8 +46,7 @@ const ApproveRaffle = () => {
       setError('');
     } catch (err) {
       console.error(err);
-      setError(err.message);
-      setMessage('');
+      setError('🗑️ Limpe o cache do seu metamask e verifique se o endereço da rifa esta correto ❌');
     }
   };
 

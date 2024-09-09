@@ -11,8 +11,17 @@ const SorteioRaffle = () => {
 
   const handleSorteio = async () => {
     try {
-      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊');
-      if (!rifaAddress) throw new Error('🛑O ID da rifa é obrigatório🛑');
+      setMessage('');
+      setError('');
+
+      if (!rifaAddress) {
+        setError('🛑 Endereço da rifa não informado 🛑');
+        return;
+      }
+
+      if (!window.ethereum) {
+        throw new Error('🦊 MetaMask não está instalada 🦊');
+      }
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -44,7 +53,7 @@ const SorteioRaffle = () => {
       setError('');
     } catch (err) {
       console.error(err);
-      setError(err.message);
+      setError('❌ Endereço da rifa não encontrado ❌');
       setMessage('');
     }
   };

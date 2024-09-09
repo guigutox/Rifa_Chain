@@ -6,32 +6,45 @@ import { CONTRACT_ADDRESSES } from './config';
 
 
 const MintTokens = () => {
-  const [to, setTo] = useState(''); 
-  const [amount, setAmount] = useState(''); 
+  const [to, setTo] = useState('');
+  const [amount, setAmount] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleMint = async () => {
     try {
-      if (!window.ethereum) throw new Error('🦊 MetaMask não está instalada 🦊'); 
-      if (!to) throw new Error('🛑 Endereço do destinatário não informado 🛑'); 
-      if (!amount) throw new Error('🛑 Quantidade de tokens não informada 🛑'); 
-  
-      await window.ethereum.request({ method: 'eth_requestAccounts' }); 
+      setMessage('');
+      setError('');
+
+      if (!window.ethereum) {
+        setError('🦊 MetaMask não está instalada 🦊');
+        return;
+      }
+
+      if (!to) {
+        setError('🛑 Endereço do destinatário não informado 🛑');
+        return;
+      }
+
+      if (!amount) {
+        setError('🛑 Quantidade de tokens não informada 🛑');
+        return;
+      }
+
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
       const RealDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi, signer);
-  
-      const amountToMint = ethers.parseUnits(amount, 18); 
-      const tx = await RealDigitalContract.mint(to, amountToMint); 
+
+      const amountToMint = ethers.parseUnits(amount, 18);
+      const tx = await RealDigitalContract.mint(to, amountToMint);
       await tx.wait();
-  
-      setMessage('✔️ Tokens mintados com sucesso! ✔️'); 
-      setError(''); 
+
+      setMessage('✔️ Tokens mintados com sucesso! ✔️');
     } catch (err) {
       console.error(err);
-      setError(err.message); 
+      setError("❓ Endereço não encontrado ou quantidade inválida ❌");
     }
   };
 
@@ -50,11 +63,11 @@ const MintTokens = () => {
         type="number"
         placeholder="100"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)} 
+        onChange={(e) => setAmount(e.target.value)}
       />
-      <button onClick={handleMint}>Mintar Tokens</button> 
-      {message && <p className = "messageSucess">{message}</p>}
-      {error && <p className = "messageError">{error}</p>}
+      <button onClick={handleMint}>Mintar Tokens</button>
+      {message && <p className="messageSucess">{message}</p>}
+      {error && <p className="messageError">{error}</p>}
 
     </div>
   );

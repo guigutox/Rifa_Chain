@@ -11,12 +11,14 @@ const GetBalance = () => {
 
   const handleGetBalance = async () => {
     try {
-      if (!window.ethereum) {
-        throw new Error('MetaMask não está instalada');
+      setError('');
+      if (!address) {
+        setError('🛑 Endereço não informado 🛑');
+        return;
       }
       
-      if (!address) {
-        throw new Error('🛑 O endereço é obrigatório 🛑');
+      if (!window.ethereum) {
+        throw new Error('🦊 MetaMask não está instalada 🦊');
       }
 
       await window.ethereum.request({ method: 'eth_requestAccounts' });

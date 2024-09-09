@@ -11,8 +11,21 @@ const EnterRaffle = () => {
 
   const handleEnterRaffle = async () => {
     try {
+      setMessage('');
+      setError('');
+
+      if (!rifaAddress) {
+        setError('🛑 Endereço da rifa não informado 🛑');
+        return;
+      }
+
+      if (!quantidadeRifas) {
+        setError('🛑 Quantidade de rifas não informada 🛑');
+        return;
+      }
+
       if (!window.ethereum) {
-        throw new Error('MetaMask não está instalada');
+        throw new Error('🦊 MetaMask não está instalada 🦊');
       }
 
       // Solicitar a conexão da MetaMask
@@ -21,22 +34,12 @@ const EnterRaffle = () => {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      if (!rifaAddress) {
-        throw new Error('🛑 O Endereço da rifa é obrigatório 🛑');
-      }
-
-      if (!quantidadeRifas) {
-        throw new Error('🛑 A quantidade de rifas é obrigatória 🛑');
-      }
-
       const rifaContract = new ethers.Contract(rifaAddress, rifaJson.abi, signer);
-
 
       const tx = await rifaContract.entrar(Number(quantidadeRifas));
       await tx.wait();
 
       console.log(tx);
-
 
       const backendResponse = await fetch('/atualizaDB', {
         method: 'POST',
@@ -56,11 +59,9 @@ const EnterRaffle = () => {
       }
 
       setMessage('✔️ Você entrou na rifa com sucesso! ✔️');
-      setError('');
     } catch (err) {
       console.error(err);
-      setError(err.message);
-      setMessage('');
+      setError('❌ Erro ao entrar na rifa ❌');
     }
   };
 
