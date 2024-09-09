@@ -57,7 +57,7 @@ describe("Rifa", function () {
         expect(vencedor).to.be.oneOf([addr1.address, addr2.address]);
     });
 
-    it("Apenas o gerente pode chamar escolherVencedor manualmente", async function () {
+    it("Apenas o dono pode chamar escolherVencedor manualmente", async function () {
         // Aprovação de tokens para addr1 e addr2
         await realDigital.connect(addr1).approve(rifa.getAddress(), 5);
         await realDigital.connect(addr2).approve(rifa.getAddress(), 5);
@@ -71,5 +71,54 @@ describe("Rifa", function () {
 
         // Tentativa do gerente escolher manualmente (deve falhar se o sorteio já foi realizado)
         await expect(rifa.escolherVencedor()).to.be.revertedWith("Sorteio ja realizado");
+    });
+
+    it("Deve criar uma nova rifa corretamente", async function () {
+        // Parâmetros da nova rifa
+        const maxEntradas = 100;
+        const valorEntrada = 2;
+    
+        // Criando uma nova instância do contrato Rifa
+        const Rifa = await ethers.getContractFactory("Rifa");
+        const rifaCriada = await Rifa.deploy(realDigital.getAddress(), maxEntradas, valorEntrada);
+    
+        // Garantindo que a rifa foi criada corretamente
+        expect(await rifaCriada.maxEntradas()).to.equal(maxEntradas);
+        expect(await rifaCriada.valorEntrada()).to.equal(valorEntrada);
+        expect(await rifaCriada.restEntradas()).to.equal(maxEntradas); // Deve ter todas as entradas disponíveis inicialmente
+        expect(await rifaCriada.sorteado()).to.equal(false); // Sorteio ainda não deve ter sido realizado
+    });
+
+    it("Deve atualizar o contrato corretamente após a compra de entradas", async function () {
+        // Aprovação de tokens para addr1
+        await realDigital.connect(addr1).approve(rifa.getAddress(), 5);
+
+        // addr1 compra 5 entradas
+        await rifa.connect(addr1).entrar(5);
+
+        // Verificando se o contrato foi atualizado corretamente
+        expect(await rifa.entradas(0)).to.equal(addr1.address);
+        expect(await rifa.entradas(1)).to.equal(addr1.address);
+        expect(await rifa.restEntradas()).to.equal(5); // restEntradas deve ter sido decrementado
+    });
+
+    it("Verifica se o saldo do vencedor é atualizado corretamente após o sorteio", async function () {
+        // Aprovação de tokens para addr1 e addr2
+        await realDigital.connect(addr1).approve(rifa.getAddress(), 5);
+        await realDigital.connect(addr2).approve(rifa.getAddress(), 5);
+
+        // addr1 compra 5 entradas e addr2 compra outras 5 entradas
+        await rifa.connect(addr1).entrar(5);
+        await rifa.connect(addr2).entrar(5);
+
+        // Restam 0 entradas após as compras
+        expect(await rifa.restEntradas()).to.equal(0);
+
+        // Como as entradas acabaram, o sorteio deve ser realizado automaticamente
+        const vencedor = await rifa.vencedor();
+
+        // Saldo do vencedor deve ser atualizado
+        const saldoVencedor = await realDigital.balanceOf(vencedor);
+        expect(saldoVencedor).to.be.greaterThan(0);
     });
 });
