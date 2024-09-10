@@ -10,7 +10,7 @@ const CreateRaffle = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const fetchURL = 'https://k2u52s2tc6.execute-api.us-east-1.amazonaws.com/dev'; // URL base
+  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default'; // URL base
   
   const handleCreateRaffle = async () => {
     try {
@@ -30,7 +30,7 @@ const CreateRaffle = () => {
       const rifaAddress = await rifa.getAddress();
   
       // Enviar os dados da nova rifa para o backend para salvar no banco de dados
-      const response = await fetch(`${fetchURL}/criar-rifa`, {
+      const response = await fetch(`${fetchURL}/rifa-chain-cria-rifa`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ const EnterRaffle = () => {
   const [quantidadeRifas, setQuantidadeRifas] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const fetchURL = 'https://k2u52s2tc6.execute-api.us-east-1.amazonaws.com/dev';
+  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain';
 
   const handleEnterRaffle = async () => {
     try {
@@ -42,7 +42,7 @@ const EnterRaffle = () => {
 
       console.log(tx);
 
-      const backendResponse = await fetch(`${fetchURL}/atualizaDB`, {
+      const backendResponse = await fetch(`${fetchURL}-atualizaDB`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

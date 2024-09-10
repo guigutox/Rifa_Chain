@@ -8,7 +8,7 @@ const SorteioRaffle = () => {
   const [rifaAddress, setrifaAddress] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const fetchURL = 'https://k2u52s2tc6.execute-api.us-east-1.amazonaws.com/dev';
+  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain';
 
   const handleSorteio = async () => {
     try {
@@ -34,7 +34,7 @@ const SorteioRaffle = () => {
       const tx = await rifaContract.escolherVencedor();
       await tx.wait();
 
-      const backendResponse = await fetch(`${fetchURL}/sorteio`, {
+      const backendResponse = await fetch(`${fetchURL}-sorteio`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

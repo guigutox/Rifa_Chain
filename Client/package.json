@@ -22,7 +22,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://k2u52s2tc6.execute-api.us-east-1.amazonaws.com/dev",
+  "proxy": "https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default",
   "eslintConfig": {
     "extends": [
       "react-app",
