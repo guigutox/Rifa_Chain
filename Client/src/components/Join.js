@@ -1,0 +1,93 @@
+import React, { useState } from 'react';
+import { ethers } from 'ethers';
+import rifaJson from './contracts/Rifa.json';
+import '../App.css';
+
+const EnterRaffle = () => {
+  const [rifaAddress, setrifaAddress] = useState('');
+  const [quantidadeRifas, setQuantidadeRifas] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain';
+
+  const handleEnterRaffle = async () => {
+    try {
+      setMessage('');
+      setError('');
+
+      if (!rifaAddress) {
+        setError('🛑 Endereço da rifa não informado 🛑');
+        return;
+      }
+
+      if (!quantidadeRifas) {
+        setError('🛑 Quantidade de rifas não informada 🛑');
+        return;
+      }
+
+      if (!window.ethereum) {
+        throw new Error('🦊 MetaMask não está instalada 🦊');
+      }
+
+      // Solicitar a conexão da MetaMask
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const rifaContract = new ethers.Contract(rifaAddress, rifaJson.abi, signer);
+
+      const tx = await rifaContract.entrar(Number(quantidadeRifas));
+      await tx.wait();
+
+      console.log(tx);
+
+      const backendResponse = await fetch(`${fetchURL}-atualizaDB`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rifaAddress,
+          quantidadeRifas: Number(quantidadeRifas),  
+        }),
+      });
+
+      const backendData = await backendResponse.json();
+
+      if (!backendResponse.ok) {
+        throw new Error(backendData.error || 'Erro ao atualizar a rifa');
+      }
+
+      setMessage('✔️ Você entrou na rifa com sucesso! ✔️');
+    } catch (err) {
+      console.error(err);
+      setError('❌ Erro ao entrar na rifa ❌');
+    }
+  };
+
+  return (
+    <div>
+      <h2>Entrar na Rifa</h2>
+      <label>Endereço da rifa</label>
+      <input
+        type="text"
+        placeholder="0x1234567890123456789012345678901234567890"
+        value={rifaAddress}
+        onChange={(e) => setrifaAddress(e.target.value)}
+      />
+      <label>Quantidade de Rifas</label>
+      <input
+        type="number"
+        placeholder="20"
+        value={quantidadeRifas}
+        onChange={(e) => setQuantidadeRifas(e.target.value)}
+      />
+      <button onClick={handleEnterRaffle}>Entrar na Rifa</button>
+      {message && <p className="messageSucess">{message}</p>}
+      {error && <p className="messageError">{error}</p>}
+    </div>
+  );
+};
+
+export default EnterRaffle;
