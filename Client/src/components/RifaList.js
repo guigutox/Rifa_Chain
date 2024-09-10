@@ -4,29 +4,28 @@ const RifaList = () => {
   const [rifas, setRifas] = useState([]);
   const [error, setError] = useState('');
 
-  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain';
+  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain-rifas'; 
   
   useEffect(() => {
     const fetchRifas = async () => {
       try {
-        const response = await fetch(`${fetchURL}-rifas`);
+        const response = await fetch(fetchURL);
         if (!response.ok) {
           throw new Error('Erro ao buscar rifas');
         }
 
-        const responseData = await response.json();
-        const data = JSON.parse(responseData.body);
+        const responseData = await response.json(); 
         
-        // Verifique se 'data' é um array, caso contrário, lança um erro
-        if (!Array.isArray(data) || data.length === 0) {
+
+        if (!Array.isArray(responseData)) {
           throw new Error('❌ Nenhuma rifa disponível no momento. ❌');
         }
 
-        setRifas(data);
+        setRifas(responseData);
         setError('');
       } catch (err) {
         setError(err.message || 'Erro desconhecido');
-        setRifas([]); // Garante que 'rifas' seja um array vazio em caso de erro
+        setRifas([]); 
       }
     };
 
@@ -41,7 +40,7 @@ const RifaList = () => {
         <p>Nenhuma rifa disponível</p>
       ) : (
         <div className="RifaConteiner">
-          {Array.isArray(rifas) && rifas.map((rifa) => ( // Verifica se 'rifas' é um array
+          {Array.isArray(rifas) && rifas.map((rifa) => ( 
             <ul key={rifa._id} className="ListaRifa">
               <li>Endereço: {rifa.address}</li>
               <li>Valor da Entrada: {rifa.valorEntrada}</li>
