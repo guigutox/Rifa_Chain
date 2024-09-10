@@ -8,18 +8,6 @@ Propomos a solução de criar um sistema de rifa utilizando blockchain, onde o c
 
 Aqui estão os principais endpoints da nossa API:
 
-### 🔒 Autenticação
-
-- **Login**
-  - Método: `POST`
-  - Endpoint: `/api/auth/login`
-  - Descrição: Realiza o login do usuário.
-  
-- **Cadastro**
-  - Método: `POST`
-  - Endpoint: `/api/auth/register`
-  - Descrição: Realiza o cadastro de um novo usuário.
-
 ### 🎟️ Rifas
 
 - **Criar uma rifa**
