@@ -6,7 +6,7 @@ const rifaRepository = require("./infra/helper/repositories/rifa-repository");
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 
-//Rota para criar Rifa no db
+
 router.post('/criar-rifa', async (req, res) => {
     try {
       const { rifaAddress, maxEntradas, valorEntrada } = req.body;
@@ -15,7 +15,7 @@ router.post('/criar-rifa', async (req, res) => {
         address: rifaAddress,
         valorEntrada: valorEntrada,
         maxEntradas: maxEntradas,
-        entradasRestantes: maxEntradas,  // Inicialmente todas as vagas estão disponíveis
+        entradasRestantes: maxEntradas,  
         sorteioRealizado: false,  
         tokensAcumulados: "0",  
       });
@@ -32,12 +32,10 @@ router.post('/criar-rifa', async (req, res) => {
 
 
 
-//Rota para atualizar o banco de dados conforme mais pessoas entram na rifa
 router.post('/atualizaDB', async (req, res) => {
     try {
         const { rifaAddress, quantidadeRifas } = req.body;
 
-        // Busca a rifa pelo campo "address"
         const rifaData = await rifaRepository.findOne({ address: rifaAddress });
         if (!rifaData) {
             return res.status(404).send({ error: 'Rifa não encontrada' });
@@ -61,7 +59,7 @@ router.post('/atualizaDB', async (req, res) => {
 });
 
 
-// atualiza o db caso alguem seja sorteado
+
 router.post('/sorteio', async (req, res) => {
     try {
         const { rifaAddress } = req.body;

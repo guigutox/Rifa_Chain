@@ -39,7 +39,7 @@ const ApproveRaffle = () => {
       const RealDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi, signer);
       const amountToApprove = ethers.parseUnits(amount, 18);
 
-      const tx = await RealDigitalContract.approve(rifaAddress, amountToApprove);
+      const tx = await RealDigitalContract.approve(rifaAddress, Number(amountToApprove));
       await tx.wait();
 
       setMessage('✔️ Aprovação realizada com sucesso! ✔️');

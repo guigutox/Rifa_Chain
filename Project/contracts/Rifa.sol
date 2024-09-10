@@ -48,7 +48,7 @@ contract Rifa {
         uint256 totalCusto = quantidadeRifas * valorEntrada;
         require(token.balanceOf(msg.sender) >= totalCusto, "Saldo insuficiente para entrar na rifa");
 
-        // verifica se ele nao tentou comprar mais tickets do que estao disponiveis
+
         if (quantidadeRifas > restEntradas) {
             quantidadeRifas = restEntradas;
             totalCusto = quantidadeRifas * valorEntrada;
@@ -71,8 +71,6 @@ contract Rifa {
         return uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, entradasCount)));
     }
 
-    //Funcao criada para sortear automaticamente assim que todos os tickets forem comprados, pois, nesse cenario, não há motivo em manter a rifa operando.
-    //Foi criada uma funcao a parte de escolherVencedor(), pois, o intuito desta é permitir que apenas o criador da rifa possa chama-la quando desejar
     function rifaCompleta() private  {
 
         require(entradasCount > 0, "Nenhuma entrada na rifa");

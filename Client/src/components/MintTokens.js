@@ -38,7 +38,7 @@ const MintTokens = () => {
       const RealDigitalContract = new ethers.Contract(CONTRACT_ADDRESSES.REAL_DIGITAL, realDigitalJson.abi, signer);
 
       const amountToMint = ethers.parseUnits(amount, 18);
-      const tx = await RealDigitalContract.mint(to, amountToMint);
+      const tx = await RealDigitalContract.mint(to, Number(amountToMint));
       await tx.wait();
 
       setMessage('✔️ Tokens mintados com sucesso! ✔️');
