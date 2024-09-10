@@ -7,6 +7,7 @@ import MintTokens from './MintTokens';
 import RifaList from './RifaList';
 import CreateRaffle from './CreateRaffle'
 import Particle from './Particle.js';
+import GetEntradas from './Getentradas.js';
 
 
 
@@ -31,6 +32,8 @@ const Home = () => {
                 return <CreateRaffle/>;    
             default:
                 return <EnterRaffle />;
+            case 'getEntradas':
+                return <GetEntradas />;
         }
     };
 
@@ -42,6 +45,9 @@ const Home = () => {
                 <ul>
                     <li onClick={() => setActiveComponent('rifaList')}>
                         Listar Rifas
+                    </li>
+                    <li onClick={() => setActiveComponent('getEntradas')}>
+                        Buscar Participantes
                     </li>
                     <li onClick={() => setActiveComponent('Criar rifa')}>
                         Criar Rifa

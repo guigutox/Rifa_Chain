@@ -62,7 +62,7 @@ const GetEntradas = () => {
           <h3>Lista de Participantes:</h3>
           <ul>
             {participantes.map((participante, index) => (
-              <li key={index}>{participante}</li>
+              <li className="listaparticipantes" key={index}>{participante}</li>
             ))}
           </ul>
         </div>
