@@ -9,8 +9,6 @@ const CreateRaffle = () => {
   const [valorEntrada, setValorEntrada] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
-  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default'; // URL base
   
   const handleCreateRaffle = async () => {
     try {
@@ -24,13 +22,13 @@ const CreateRaffle = () => {
       const signer = await provider.getSigner();
   
       const RifaFactory = new ethers.ContractFactory(rifaJson.abi, rifaJson.bytecode, signer);
-      const rifa = await RifaFactory.deploy(CONTRACT_ADDRESSES.REAL_DIGITAL, maxEntradas, ethers.parseUnits(valorEntrada, 18));
+      const rifa = await RifaFactory.deploy(CONTRACT_ADDRESSES.REAL_DIGITAL, maxEntradas, ethers.parseUnits(valorEntrada.toString(), 18));
       await rifa.waitForDeployment();
   
       const rifaAddress = await rifa.getAddress();
   
       // Enviar os dados da nova rifa para o backend para salvar no banco de dados
-      const response = await fetch(`${fetchURL}/rifa-chain-cria-rifa`, {
+      const response = await fetch('/criar-rifa', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

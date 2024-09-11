@@ -8,7 +8,6 @@ const EnterRaffle = () => {
   const [quantidadeRifas, setQuantidadeRifas] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain';
 
   const handleEnterRaffle = async () => {
     try {
@@ -38,11 +37,12 @@ const EnterRaffle = () => {
       const rifaContract = new ethers.Contract(rifaAddress, rifaJson.abi, signer);
 
       const tx = await rifaContract.entrar(Number(quantidadeRifas));
+
       await tx.wait();
 
       console.log(tx);
 
-      const backendResponse = await fetch(`${fetchURL}-atualizaDB`, {
+      const backendResponse = await fetch('/atualizaDB', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
