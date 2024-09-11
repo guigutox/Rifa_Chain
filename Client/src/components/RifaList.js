@@ -4,12 +4,11 @@ const RifaList = () => {
   const [rifas, setRifas] = useState([]);
   const [error, setError] = useState('');
 
-  const fetchURL = 'https://56ib5h7qx5.execute-api.us-east-1.amazonaws.com/default/rifa-chain-rifas'; 
   
   useEffect(() => {
     const fetchRifas = async () => {
       try {
-        const response = await fetch(fetchURL);
+        const response = await fetch('/rifas');
         if (!response.ok) {
           throw new Error('Erro ao buscar rifas');
         }
